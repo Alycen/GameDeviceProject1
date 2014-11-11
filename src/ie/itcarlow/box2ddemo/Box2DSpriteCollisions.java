@@ -37,6 +37,9 @@ public class Box2DSpriteCollisions extends BaseGameActivity implements IUpdateHa
 	// Constants
 	// ===========================================================
 
+	
+	//Things :D!!!!!
+	
 	private static final int CAMERA_WIDTH = 720;
 	private static final int CAMERA_HEIGHT = 480;
 
