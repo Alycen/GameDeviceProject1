@@ -30,6 +30,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-public class Police extends Civilian {
+public class Doppleganger extends Target {
 	
 }

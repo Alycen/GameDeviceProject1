@@ -1,6 +1,5 @@
 package ie.itcarlow.box2ddemo;
 
-
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
@@ -30,7 +29,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-
 
 public class Box2DSpriteCollisions extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
