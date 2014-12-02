@@ -9,15 +9,11 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Civilian {
-	//position
 	private Vector2 m_position;
-	//texture
 	private BitmapTextureAtlas mTexture;
 	private ITextureRegion mTextureRegion;
 	private Sprite mSprite, markSprite;
-	//scale
 	private float m_width, m_height, m_scale;
-	//bools
 	private boolean m_marked, m_shot;
 	//(States) Normal, Alert
 	
@@ -26,38 +22,36 @@ public class Civilian {
 	//Move()
 	//Update()
 	
-	//public void Load(TextureManager mTextureManager) {
-	//	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); 
-	//	mTexture = new BitmapTextureAtlas(mTextureManager, 32, 40);
+	public void Load(TextureManager mTextureManager) {
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); 
+		mTexture = new BitmapTextureAtlas(mTextureManager, 32, 40);
 		//mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, /* context*/ , "tempNPC.png", 0, 0);
-	//	mTexture.load();
-	//}
+		mTexture.load();
+	}
 	
-	//public boolean CheckMark() {
+	public void Move() {
+		
+	}
+	
+	public boolean Marked() {
 		// if(screentaped and crosshair in sprite area)
 		//		shot = true; 
 		// else
 		//		shot = false;
-	//	return marked;
-	//}
+		return m_marked;
+	}
 	
-	//public boolean CheckHit() {
+	public boolean Shot() {
 		// if(screentaped and crosshair in sprite area)
 		//		shot = true;
 		// else
 		//		shot = false;
 		
-	//	return shot;
-	//}
+		return m_shot;
+	}
 	
-	//public void Update() {
-	//	Move();
-	//}
-	
-	//public void Draw() {
-	//	mSprite = new Sprite(50, 50, this.mTextureRegion, this.getVertexBufferObjectManager());
-		// if CheckMark() == true ) 
-		// 		draw marker;
-	//}
+	public void Update() {
+		Move();
+	}
 }
 
