@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 //
 
 
-public class Main extends BaseGameActivity implements IUpdateHandler {
+public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -103,7 +103,7 @@ public class Main extends BaseGameActivity implements IUpdateHandler {
            public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
                                         final float pTouchAreaLocalX,
                                         final float pTouchAreaLocalY) {
-        	   mAustrianB	
+        	   //mAustrianB	
                //setBodyPosition(this, pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
                //return true;
                

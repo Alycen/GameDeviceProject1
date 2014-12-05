@@ -1,4 +1,4 @@
-package ie.itcarlow.box2ddemo;
+package ie.itcarlow.snipersim;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.TextureManager;

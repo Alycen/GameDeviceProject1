@@ -1,4 +1,5 @@
-package ie.itcarlow.box2ddemo;
+package ie.itcarlow.snipersim;
+
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
