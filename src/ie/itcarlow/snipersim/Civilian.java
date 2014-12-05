@@ -15,7 +15,7 @@ public class Civilian {
 	private Sprite mSprite, markSprite;
 	private float m_width = 23, m_height = 49, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
-	//(States) Normal, Alert
+	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
 	
 	public void Load(BitmapTextureAtlas texAtlas , ITextureRegion texRegion ) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
 		mTexture = texAtlas;
