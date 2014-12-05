@@ -77,17 +77,12 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
     }
 
-    private void loadGfx() {     
-<<<<<<< Updated upstream
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+    private void loadGfx() {
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         //pass civilian textures here, make them local??? 
-=======
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");  
         //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();
-        
->>>>>>> Stashed changes
     }
 
     @Override
