@@ -146,7 +146,6 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 		
 	}
 
-	    
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================
