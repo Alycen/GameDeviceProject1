@@ -17,17 +17,18 @@ public class Civilian {
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert
 	
-	public void Load(TextureManager mTextureManager) { // Civilians will not be touch regions just drawn on sprites
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); 
-		mTexture = new BitmapTextureAtlas(mTextureManager, 32, 40);
-		//mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, /* context*/ , "tempNPC.png", 0, 0);
+	public void Load(BitmapTextureAtlas texAtlas , ITextureRegion texRegion ) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
+		mTexture = texAtlas;
+		mTextureRegion = texRegion;
 		mTexture.load();
 	}
 	
 	public void Move() {
 		int timer = 0;
-		for ( ; timer < 30 ; timer ++ ) {
-			//do move things
+		int target = 30 * 2; // assuming 30 frames per second in eclipse -> might use a rand num generator for the seconds
+		// do random number thing to decide direction
+		for ( ; timer < target; timer ++ ) {
+			m_position.x += 2; // need to take scale into consideration too - > only going right for test purposes
 		}
 	}
 	
@@ -35,8 +36,8 @@ public class Civilian {
 		m_marked = mark;
 	}
 	
-	public boolean Marked() { // 
-		// if(screentaped && crosshair in sprite area)
+	public boolean Marked() { // in level class ??
+		// if(screen taped && crosshair in sprite area)
 		//		shot = true; 
 		// else
 		//		shot = false;
@@ -47,13 +48,17 @@ public class Civilian {
 		m_shot = shoot;
 	}
 	
-	public boolean Shot() {
+	public boolean Shot() { // in level class ?? 
 		// if(screentaped && crosshair in sprite area)
 		//		shot = true;
 		// else
 		//		shot = false;
 		
 		return m_shot;
+	}
+	
+	public Vector2 getPosition() {
+		return m_position;
 	}
 	
 	public void Update() {
