@@ -27,13 +27,24 @@ public class Civilian {
 		int timer = 0;
 		int target = 30 * 2; // assuming 30 frames per second in eclipse -> might use a rand num generator for the seconds
 		// do random number thing to decide direction
-		for ( ; timer < target; timer ++ ) {
+		for ( ; timer <= target; timer ++ ) {
 			m_position.x += 2; // need to take scale into consideration too - > only going right for test purposes
+		}
+		if (timer == target) {
+			timer = 0;
 		}
 	}
 	
-	public void setMarked(boolean mark) {
-		m_marked = mark;
+	public void Update() {
+		Move();
+	}
+	
+	///////////////////////////////////////
+	// GET METHODS
+	///////////////////////////////////////
+	
+	public Vector2 getPosition() {
+		return m_position;
 	}
 	
 	public boolean Marked() { // in level class ??
@@ -42,10 +53,6 @@ public class Civilian {
 		// else
 		//		shot = false;
 		return m_marked;
-	}
-	
-	public void setShot(boolean shoot) {
-		m_shot = shoot;
 	}
 	
 	public boolean Shot() { // in level class ?? 
@@ -57,12 +64,16 @@ public class Civilian {
 		return m_shot;
 	}
 	
-	public Vector2 getPosition() {
-		return m_position;
+	///////////////////////////////////////
+	// SET METHODS
+	///////////////////////////////////////
+	
+	public void setMarked(boolean mark) {
+		m_marked = mark;
 	}
 	
-	public void Update() {
-		Move();
+	public void setShot(boolean shoot) {
+		m_shot = shoot;
 	}
 }
 
