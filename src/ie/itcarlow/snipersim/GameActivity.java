@@ -17,7 +17,8 @@ import org.andengine.ui.activity.BaseGameActivity;
 import android.view.MotionEvent;
 //
 
-
+// !!! There's a big problem with this main class, the project wont run at all on android virtual devices and it's a problem with this file
+// !!! Needs to be fixed ASAP
 public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants

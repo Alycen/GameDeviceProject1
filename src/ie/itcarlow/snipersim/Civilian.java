@@ -17,6 +17,7 @@ public class Civilian {
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
 	
+	//should use this for mark sprite too ??
 	public void Load(BitmapTextureAtlas texAtlas , ITextureRegion texRegion ) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
 		mTexture = texAtlas;
 		mTextureRegion = texRegion;
@@ -43,6 +44,10 @@ public class Civilian {
 	// GET METHODS
 	///////////////////////////////////////
 	
+	public float getScale() {
+		return m_scale;
+	}
+	
 	public Vector2 getPosition() {
 		return m_position;
 	}
@@ -67,6 +72,14 @@ public class Civilian {
 	///////////////////////////////////////
 	// SET METHODS
 	///////////////////////////////////////
+	
+	public void setScale(float scale) {
+		m_scale = scale;
+	}
+	
+	public void setPosition(Vector2 position) {
+		m_position = position;
+	}
 	
 	public void setMarked(boolean mark) {
 		m_marked = mark;
