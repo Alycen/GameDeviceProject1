@@ -35,9 +35,6 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	private SmoothCamera m_camera;
 	
 	//=====//Leftovers
-	private BitmapTextureAtlas mTextureAustrianBear;
-	private ITextureRegion mAustrianBearTextureRegion;
-	private Sprite austrianBear;
 	private Scene mScene;
 	
 	// ===========================================================
@@ -70,11 +67,8 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
     }
 
     private void loadGfx() {     
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");  
-        mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
-        mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
-        mTextureAustrianBear.load();
-        
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        //pass civilian textures here, make them local??? 
     }
 
     @Override
@@ -89,46 +83,12 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
     @Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) 
-          throws Exception {
-
-       // Setup coordinates for the sprite in order that it will
-       //  be centered on the camera.
-	   final float centerX = (CAMERA_WIDTH - this.mAustrianBearTextureRegion.getWidth()) / 2;
-	   final float centerY = (CAMERA_HEIGHT - this.mAustrianBearTextureRegion.getHeight()) / 2;
- 
-	   // Create the austrian bear and add it to the scene.
-	   
-	   austrianBear = new Sprite(centerX, centerY, this.mAustrianBearTextureRegion, this.getVertexBufferObjectManager())
-	   {
-           @Override
-           public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
-                                        final float pTouchAreaLocalX,
-                                        final float pTouchAreaLocalY) {
-        	   //mAustrianB	
-               //setBodyPosition(this, pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
-               //return true;
-               
-               if (pSceneTouchEvent.getAction() == MotionEvent.ACTION_UP) {
-                   //setBodyPosition(this, event.getX() - this.getWidth() / 2, event.getY() - this.getHeight() / 2);
-                     
-                   }
-                       return true;
-           }
-       };	   
-	   
-				this.mEngine.getVertexBufferObjectManager();
-		this.mScene.registerTouchArea(austrianBear);
-
-		mScene.attachChild(austrianBear);
-
-		// The bear sprite (unlike the piglet sprite) is a local variable,
-		// so it must be passed to method createPhysicsBodies
-	   
-	   // The bear sprite (unlike the piglet sprite) is a local variable, 
-	   //  so it must be passed to method createPhysicsBodies
-	  this.mEngine.registerUpdateHandler(this);
+          throws Exception { 
+    	this.mEngine.getVertexBufferObjectManager();
+		
+    	this.mEngine.registerUpdateHandler(this);
 	 	 
-	   pOnPopulateSceneCallback.onPopulateSceneFinished();
+    	pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
 
 	// ===========================================================
