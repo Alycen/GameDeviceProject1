@@ -7,6 +7,7 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.andengine.entity.scene.menu.item.decorator.BaseMenuItemDecorator;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.util.color.Color;
 
@@ -19,7 +20,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	
 	@Override
 	public void createScene() {
-		setBackground(new Background(Color.BLUE));
+		setBackground(new Background(Color.CYAN));
+		
 		createMenu();
 	}
 
@@ -36,19 +38,22 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private void createMenu() {
 		menu = new MenuScene(camera);
 		menu.setPosition(0,0);
+		
 		final IMenuItem playItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, ResourceManager.getInstance().play_button_region, vbom), 1.2f, 1);
 		final IMenuItem exitItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_EXIT, ResourceManager.getInstance().exit_button_region, vbom), 1.2f, 1);
 		
 		menu.addMenuItem(playItem);
 		menu.addMenuItem(exitItem);
 		
-		menu.buildAnimations();
+		//Building animations breaks things fuck everything
+		//menu.buildAnimations();
 		menu.setBackgroundEnabled(false);
 		
 		playItem.setPosition(playItem.getX(), playItem.getY() + 20);
 		exitItem.setPosition(exitItem.getX(), exitItem.getY());
 		
 		menu.setOnMenuItemClickListener(this);
+		setChildScene(menu);
 	}
 
 	@Override
