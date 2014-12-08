@@ -34,8 +34,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-// !!! There's a big problem with this main class, the project wont run at all on android virtual devices and it's a problem with this file
-// !!! Needs to be fixed ASAP
 public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants
@@ -50,6 +48,8 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
 	private float m_camSpeed = 4;
 	private SmoothCamera m_camera;
+	
+	Civilian civTest;
 	
 	//=====//Leftovers
 	private Scene mScene;
@@ -95,9 +95,10 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         //pass civilian textures here
     	BitmapTextureAtlas civSprite = new BitmapTextureAtlas(getTextureManager(),23,49);
-    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tmepNPC.png", 0, 0);
+    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tempNPC.png", 0, 0);
     	//Make mark sprite and also pass it to the load method in civilian
-    	
+    	BitmapTextureAtlas markSprite = new BitmapTextureAtlas(getTextureManager(),5,8);
+    	ITextureRegion markRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(markSprite, this, "mark.png", 0,0);
         //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();
@@ -111,8 +112,7 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
   		this.mScene.setBackground(new Background(0, 125, 58));
   	    pOnCreateSceneCallback.onCreateSceneFinished(this.mScene);  		
   	}
-
-
+    
     @Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) 
           throws Exception { 
@@ -138,9 +138,7 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 		
 	}
 
-	    
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================
-    
 }
