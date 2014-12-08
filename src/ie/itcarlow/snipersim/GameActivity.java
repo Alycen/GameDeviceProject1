@@ -19,6 +19,20 @@ import org.andengine.ui.activity.BaseGameActivity;
 import android.view.MotionEvent;
 //
 import android.widget.Toast;
+import org.andengine.engine.camera.Camera;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
 // !!! There's a big problem with this main class, the project wont run at all on android virtual devices and it's a problem with this file
 // !!! Needs to be fixed ASAP
@@ -79,7 +93,11 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
     private void loadGfx() {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        //pass civilian textures here, make them local??? 
+        //pass civilian textures here
+    	BitmapTextureAtlas civSprite = new BitmapTextureAtlas(getTextureManager(),23,49);
+    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tmepNPC.png", 0, 0);
+    	//Make mark sprite and also pass it to the load method in civilian
+    	
         //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();

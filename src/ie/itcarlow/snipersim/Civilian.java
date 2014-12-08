@@ -18,9 +18,10 @@ public class Civilian {
 	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
 	
 	//should use this for mark sprite too ??
-	public void Load(BitmapTextureAtlas texAtlas , ITextureRegion texRegion ) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
-		mTexture = texAtlas;
-		mTextureRegion = texRegion;
+	public void Load(BitmapTextureAtlas texAtlasCiv, ITextureRegion texRegionCiv , Sprite mark) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
+		mTexture = texAtlasCiv;
+		mTextureRegion = texRegionCiv;
+		markSprite = mark;
 		mTexture.load();
 	}
 	
