@@ -3,6 +3,7 @@ package ie.itcarlow.snipersim.scene;
 import ie.itcarlow.snipersim.ResourceManager;
 
 import org.andengine.engine.Engine;
+import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
 public class SceneManager {
 
@@ -10,8 +11,8 @@ public class SceneManager {
 	 private BaseScene menuScene;
 	 private BaseScene gameScene;
 	 
-	 
 	 private BaseScene currentScene;
+	 
 	 private Engine engine = ResourceManager.getInstance().engine;
 	 
 	 //Scene enum
@@ -24,6 +25,14 @@ public class SceneManager {
 	 
 	 public static SceneManager getInstance() {
 		return INSTANCE;
+	 }
+	 
+	 public void setMenuScene(OnCreateSceneCallback cb) {
+		 ResourceManager.getInstance().loadMenuResources();
+		 menuScene = new MainMenuScene();
+		 setScene(menuScene);
+		 currentScene.createScene();
+		 cb.onCreateSceneFinished(menuScene);
 	 }
 	 
 	 public void setScene(BaseScene scene) {
@@ -39,6 +48,12 @@ public class SceneManager {
 				setScene(menuScene);
 			case SCENE_GAME:
 				setScene(gameScene);
+			default:
+				setScene(gameScene);
 		}
+	 }
+	 
+	 public BaseScene getCurrentScene(){
+		 return currentScene;
 	 }
 }

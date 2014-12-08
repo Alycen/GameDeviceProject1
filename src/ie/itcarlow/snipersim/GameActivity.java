@@ -1,5 +1,8 @@
 package ie.itcarlow.snipersim;
 
+import ie.itcarlow.snipersim.scene.SceneManager;
+
+import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
@@ -7,21 +10,13 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.Sprite;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.controller.MultiTouch;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.view.MotionEvent;
-//
+import android.view.KeyEvent;
 import android.widget.Toast;
+//
 
-// !!! There's a big problem with this main class, the project wont run at all on android virtual devices and it's a problem with this file
-// !!! Needs to be fixed ASAP
 public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants
@@ -35,7 +30,7 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 
 	private float m_camSpeed = 4;
-	private SmoothCamera m_camera;
+	private Camera m_camera;
 	
 	//=====//Leftovers
 	private Scene mScene;
@@ -54,8 +49,8 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
-		final SmoothCamera m_camera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, m_camSpeed, m_camSpeed, 6);
-		m_camera.setZoomFactor(0);
+		final Camera m_camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), m_camera);
 		engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
 		engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
@@ -63,48 +58,56 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 		
 		if (!MultiTouch.isSupported(this))
 		{
-			Toast.makeText(this,  "MultiTouch unsupported", Toast.LENGTH_LONG);
+			Toast.makeText(this,  "MultiTouch unsupported", Toast.LENGTH_LONG).show();			
 		}
 		
 		return engineOptions;
 	}
 
     @Override
-	public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback)	throws Exception { 
+	public void onCreateResources(OnCreateResourcesCallback cb)	throws Exception { 
+    	//Prepare Resource Manager
     	ResourceManager.prepareManager(this.getEngine(), this, m_camera, this.getVertexBufferObjectManager());
-    	 loadGfx();
-		 pOnCreateResourcesCallback.onCreateResourcesFinished();
+    	
+    	//Load all menu items
+    	 
+    	
+    	//loadGfx();
+    	 
+    	 
+		 cb.onCreateResourcesFinished();
 
-    }
-
-    private void loadGfx() {
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        //pass civilian textures here, make them local??? 
-        //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
-        //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
-        //mTextureAustrianBear.load();
     }
 
     @Override
-  	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback)
-  			throws Exception {
-
-  		this.mScene = new Scene();
-  		this.mScene.setBackground(new Background(0, 125, 58));
-  	    pOnCreateSceneCallback.onCreateSceneFinished(this.mScene);  		
+  	public void onCreateScene(OnCreateSceneCallback cb) throws Exception {
+    	SceneManager.getInstance().setMenuScene(cb);
+    	
+    	cb.onCreateSceneFinished(this.mScene);  		
   	}
 
 
     @Override
-	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) 
-          throws Exception { 
-    	this.mEngine.getVertexBufferObjectManager();
-		
-    	this.mEngine.registerUpdateHandler(this);
-	 	 
-    	pOnPopulateSceneCallback.onPopulateSceneFinished();
+	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
+    		 
+    	cb.onPopulateSceneFinished();
     }
 
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	System.exit(0);
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+    	if (keyCode == KeyEvent.KEYCODE_BACK)
+    		{
+    			SceneManager.getInstance().getCurrentScene().onBackPressed();
+    		}
+    	return false;
+    }
+    
 	// ===========================================================
 	// Methods
 	// ===========================================================
@@ -116,11 +119,9 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
 		
 	}
-
-	    
+    
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================
