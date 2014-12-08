@@ -10,18 +10,21 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Civilian {
 	private Vector2 m_position;
-	private BitmapTextureAtlas mTexture;
-	private ITextureRegion mTextureRegion;
+	private BitmapTextureAtlas mTexture, mMarkTexture;
+	private ITextureRegion mTextureRegion, mMarkTextureRegion;
 	private Sprite mSprite, markSprite;
 	private float m_width = 23, m_height = 49, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
 	
 	//should use this for mark sprite too ??
-	public void Load(BitmapTextureAtlas texAtlas , ITextureRegion texRegion ) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
-		mTexture = texAtlas;
-		mTextureRegion = texRegion;
+	public void Load(BitmapTextureAtlas texAtlasCiv, ITextureRegion texRegionCiv , BitmapTextureAtlas texAtlasMark, ITextureRegion texRegionMark) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
+		mTexture = texAtlasCiv;
+		mMarkTexture = texAtlasMark;
+		mTextureRegion = texRegionCiv;
+		mMarkTextureRegion = texRegionMark;
 		mTexture.load();
+		mMarkTexture.load();
 	}
 	
 	public void Move() {

@@ -15,7 +15,21 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import android.view.KeyEvent;
 import android.widget.Toast;
-//
+
+import org.andengine.engine.camera.Camera;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
@@ -31,6 +45,8 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
 	private float m_camSpeed = 4;
 	private Camera m_camera;
+	
+	Civilian civTest;
 	
 	//=====//Leftovers
 	private Scene mScene;
@@ -79,14 +95,26 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
     }
 
+    private void loadGfx() {
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        //pass civilian textures here
+    	BitmapTextureAtlas civSprite = new BitmapTextureAtlas(getTextureManager(),23,49);
+    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tempNPC.png", 0, 0);
+    	//Make mark sprite and also pass it to the load method in civilian
+    	BitmapTextureAtlas markSprite = new BitmapTextureAtlas(getTextureManager(),5,8);
+    	ITextureRegion markRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(markSprite, this, "mark.png", 0,0);
+        //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
+        //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
+        //mTextureAustrianBear.load();
+    }
+
     @Override
   	public void onCreateScene(OnCreateSceneCallback cb) throws Exception {
     	SceneManager.getInstance().setMenuScene(cb);
     	
     	cb.onCreateSceneFinished(this.mScene);  		
   	}
-
-
+    
     @Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
     		 
@@ -121,9 +149,8 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	public void reset() {
 		
 	}
-    
+	
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================
-    
 }
