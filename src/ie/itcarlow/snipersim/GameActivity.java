@@ -79,7 +79,6 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
     	 
     	 
 		 cb.onCreateResourcesFinished();
-
     }
 
     private void loadGfx() {

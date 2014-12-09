@@ -5,7 +5,7 @@ import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-
+import org.andengine.entity.sprite.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 
@@ -18,7 +18,6 @@ public class Civilian {
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
 	
-	//should use this for mark sprite too ??
 	public void Load(BitmapTextureAtlas texAtlasCiv, ITextureRegion texRegionCiv , BitmapTextureAtlas texAtlasMark, ITextureRegion texRegionMark) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
 		mTexture = texAtlasCiv;
 		mMarkTexture = texAtlasMark;
@@ -26,6 +25,9 @@ public class Civilian {
 		mMarkTextureRegion = texRegionMark;
 		mTexture.load();
 		mMarkTexture.load();
+		
+		mSprite = new Sprite(100, 100, this.mTextureRegion, /*getVertexBufferObjectManager()*/);
+		// markSprite will only draw when object is marked and will draw over the targets head
 	}
 	
 	public void Move() {
