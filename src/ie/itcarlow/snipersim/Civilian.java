@@ -26,7 +26,10 @@ public class Civilian {
 		mTexture.load();
 		mMarkTexture.load();
 		
-		mSprite = new Sprite(100, 100, this.mTextureRegion, /*getVertexBufferObjectManager()*/);
+		// right now Images are being made in main() then passed here then will have to be passed back to attach to scene
+		
+		// temp position at 100 100 
+		mSprite = new Sprite(100, 100, this.mTextureRegion, GameActivity.mEngine.getVertexBufferObjectManager());
 		// markSprite will only draw when object is marked and will draw over the targets head
 	}
 	
