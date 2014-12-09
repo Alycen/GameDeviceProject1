@@ -8,7 +8,7 @@ import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 public class SceneManager {
 
 	//Scene vars
-	 private BaseScene menuScene;
+	 private MainMenuScene menuScene;
 	 private BaseScene gameScene;
 	 
 	 private BaseScene currentScene;
@@ -27,29 +27,52 @@ public class SceneManager {
 		return INSTANCE;
 	 }
 	 
-	 public void setMenuScene(OnCreateSceneCallback cb) {
-		 ResourceManager.getInstance().loadMenuResources();
+	 public void setMenuScene() {
+		 
+		 //Load Menu Resources
+    	ResourceManager.getInstance().loadMenuResources();
+		 
+		 //Create the MainMenuScene
 		 menuScene = new MainMenuScene();
+		 menuScene.createScene();
+		 
+		 //Set the menuScene as the current scene
 		 setScene(menuScene);
-		 currentScene.createScene();
-		 cb.onCreateSceneFinished(menuScene);
+	 }
+	 
+	 public void setGameScene() {
+		 //Load Game resources
+		 ResourceManager.getInstance().loadGameResources();
+		 
+		 //Create the GameScene
+		 gameScene = new GameScene();
+		 gameScene.createScene();
+		 
+		 //Set the gameScene as the current scene
+		 setScene(gameScene);
+		 
 	 }
 	 
 	 public void setScene(BaseScene scene) {
+		 //If we're in a scene, dispose of it
+		 if (currentScene != null)
+			 currentScene.disposeScene();
+		 
+		 //set the new scene
 		engine.setScene(scene);
 		currentScene = scene;
 	 }
 	 
 	 //Scene switcher
-	 public void setScene(SceneType type)
+	 public void changeScene(SceneType type)
 	 {
 		switch(type) {
 			case SCENE_MENU:
-				setScene(menuScene);
+				setMenuScene();
 			case SCENE_GAME:
-				setScene(gameScene);
+				setGameScene();
 			default:
-				setScene(gameScene);
+				setMenuScene();
 		}
 	 }
 	 

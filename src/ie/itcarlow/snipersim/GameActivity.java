@@ -2,28 +2,31 @@ package ie.itcarlow.snipersim;
 
 import ie.itcarlow.snipersim.scene.SceneManager;
 
-import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.controller.MultiTouch;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class GameActivity extends BaseGameActivity implements IUpdateHandler {
+public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants
 	// ===========================================================
 
-	private static final int CAMERA_WIDTH = 720;
+	private static final int CAMERA_WIDTH = 800;
 	private static final int CAMERA_HEIGHT = 480;
 
 	// ===========================================================
@@ -31,12 +34,9 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 
 	private float m_camSpeed = 4;
-	private Camera m_camera;
+	private SmoothCamera m_camera;
 	
 	Civilian civTest;
-	
-	//=====//Leftovers
-	private Scene mScene;
 	
 	// ===========================================================
 	// Constructors
@@ -52,9 +52,9 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
-		final Camera m_camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		final SmoothCamera m_camera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, m_camSpeed, m_camSpeed, 0);
 		
-		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), m_camera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), m_camera);
 		engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
 		engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
@@ -68,20 +68,12 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 	}
 
     @Override
-	public void onCreateResources(OnCreateResourcesCallback cb)	throws Exception { 
+	public void onCreateResources()
+    {
     	//Prepare Resource Manager
     	ResourceManager.prepareManager(this.getEngine(), this, m_camera, this.getVertexBufferObjectManager());
-    	
-    	//Load all menu items
-    	 
-    	
-    	//loadGfx();
-    	 
-    	 
-		 cb.onCreateResourcesFinished();
-
     }
-
+/*
     private void loadGfx() {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         //pass civilian textures here
@@ -94,19 +86,16 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();
     }
+    */
 
     @Override
-  	public void onCreateScene(OnCreateSceneCallback cb) throws Exception {
-    	SceneManager.getInstance().setMenuScene(cb);
+  	public Scene onCreateScene() 
+    {
+    	SceneManager.getInstance().setMenuScene();
     	
-    	cb.onCreateSceneFinished(this.mScene);  		
+    	return SceneManager.getInstance().getCurrentScene();
   	}
     
-    @Override
-	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
-    		 
-    	cb.onPopulateSceneFinished();
-    }
 
     @Override
     protected void onDestroy() {
@@ -137,6 +126,22 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 		
 	}
 	
+	public void create() {
+		//setBackground(new Background(Color.CYAN));
+		//BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		//play_button_atlas = new BitmapTextureAtlas(getTextureManager(), 512, 512);
+		
+		//play_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(play_button_atlas, this, "buttonPlay.png", 0, 0);
+		//play_button_atlas.load();
+		
+		//play = new Sprite(400, 240, play_button_region, this.getVertexBufferObjectManager());
+		//ResourceManager.getInstance().loadMenuResources();
+		//play = new Sprite (400, 240, ResourceManager.getInstance().play_button_region, ResourceManager.getInstance().vbom);
+		//this.mScene.attachChild(play);
+		//SceneManager.getInstance().getCurrentScene().attachChild(play);
+		//attachChild(play);
+		//createMenu();
+	}
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================

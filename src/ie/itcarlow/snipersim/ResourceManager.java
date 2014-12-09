@@ -19,18 +19,26 @@ public class ResourceManager {
 	
 	public Engine engine;
 	public GameActivity activity;
-	public Camera camera;
+	public SmoothCamera camera;
 	public VertexBufferObjectManager vbom;
-	
-	private BuildableBitmapTextureAtlas menuTextureAtlas;
+
+	//Menu
+	private BitmapTextureAtlas play_button_atlas;
 	public ITextureRegion play_button_region;
+	
+	private BitmapTextureAtlas exit_button_atlas;
 	public ITextureRegion exit_button_region;
+	
+	//Game
+	
+	
+	//
 	
 	public static ResourceManager getInstance() {
 		return INSTANCE;
 	}
 	
-	public static void prepareManager(Engine engine, GameActivity activity, Camera camera, VertexBufferObjectManager vbom)
+	public static void prepareManager(Engine engine, GameActivity activity, SmoothCamera camera, VertexBufferObjectManager vbom)
 	{
 		getInstance().engine = engine;
 		getInstance().activity = activity;
@@ -40,22 +48,35 @@ public class ResourceManager {
 	
 	public void loadMenuResources(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 		
-		play_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "buttonPlay.png");
-		exit_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "buttonExit.png");
+        //mScopeTexture = new BitmapTextureAtlas(getTextureManager(), 739, 491);  
+        //mScopeTR = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mScopeTexture, this, "Scope.png", 0, 0);
+        //mScopeTexture.load();
 		
-		try {
-			menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			menuTextureAtlas.load();
-		} catch(Exception e) {
-			Debug.e(e);
-		}
+		play_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 256, 64, TextureOptions.BILINEAR);
+		play_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(play_button_atlas, activity, "buttonPlay.png", 0, 0);
+		play_button_atlas.load();
 		
+		exit_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
+		exit_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(exit_button_atlas, activity, "buttonExit.png", 0, 0);
+		exit_button_atlas.load();
+		
+	}
+	
+	public void unloadMenuResources() {
+		play_button_atlas.unload();
+		play_button_atlas = null;
+		
+		exit_button_atlas.unload();
+		exit_button_atlas = null;
 	}
 	
 	public void loadGameResources(){
 		
+	}
+	
+	public void unloadGameResources(){
+
 	}
 	
 	public void loadFonts(){
