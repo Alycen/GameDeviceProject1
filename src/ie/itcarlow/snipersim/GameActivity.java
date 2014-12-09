@@ -98,7 +98,7 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
     
     @Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
-    		 
+    		mScene.attachChild(civTest.getCivSprite());
     	cb.onPopulateSceneFinished();
     }
 

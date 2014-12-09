@@ -42,12 +42,12 @@ public class Civilian {
 		Random rand = new Random();
 		int verticleSpeed = 1, horizontalSpeed = 2;
 		
-		int dir = rand.nextInt((RIGHT + 1) - UP) + UP;
+		int dir = rand.nextInt((STOP + 1) - UP) + UP;
 		
 		for ( ; timer >= 0 ; timer -- ) {
 			if ( timer == 0 ) {
 				timer = 30 * 3;
-				dir = rand.nextInt((RIGHT + 1) - UP) + UP;
+				dir = rand.nextInt((STOP + 1) - UP) + UP;
 			}
 			
 			if ( dir == UP ) {
@@ -100,6 +100,10 @@ public class Civilian {
 		//		shot = false;
 		
 		return m_shot;
+	}
+	
+	public Sprite getCivSprite() {
+		return mSprite;
 	}
 	
 	///////////////////////////////////////
