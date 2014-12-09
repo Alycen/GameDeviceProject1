@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 
 public class Civilian {
-	private Vector2 m_position;
+	private Vector2 m_position, m_markPosition;
 	private BitmapTextureAtlas mTexture, mMarkTexture;
 	private ITextureRegion mTextureRegion, mMarkTextureRegion;
 	private Sprite mSprite, mMarkSprite;
@@ -20,6 +20,9 @@ public class Civilian {
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
 	
+	public void Init() {
+		
+	}
 	
 	public void Load(BaseGameActivity base, Scene scene) {
 		mTexture = new BitmapTextureAtlas(base.getTextureManager(),23,49);
@@ -29,8 +32,8 @@ public class Civilian {
 		mTexture.load();
 		mMarkTexture.load();
 		
-		mSprite = new Sprite(100,100, mTextureRegion, base.getEngine().getVertexBufferObjectManager());
-		mMarkSprite = new Sprite(110, 90, mMarkTextureRegion, base.getEngine().getVertexBufferObjectManager());
+		mSprite = new Sprite(m_position.x, m_position.y, mTextureRegion, base.getEngine().getVertexBufferObjectManager());
+		mMarkSprite = new Sprite(m_markPosition.x, m_markPosition.y, mMarkTextureRegion, base.getEngine().getVertexBufferObjectManager());
 		
 		scene.attachChild(mSprite);
 	}
@@ -40,7 +43,7 @@ public class Civilian {
 		int timer = 30 * 3; // assuming 30 frames per second in eclipse
 		int UP = 0, DOWN = 1, LEFT = 3, RIGHT = 4, STOP = 5;
 		Random rand = new Random();
-		int verticleSpeed = 1, horizontalSpeed = 2;
+		int verticleSpeed = 1, horizontalSpeed = 2; // if in different we can change the speeds here to imply running
 		
 		int dir = rand.nextInt((STOP + 1) - UP) + UP;
 		
@@ -63,7 +66,7 @@ public class Civilian {
 				m_position.x += horizontalSpeed;
 			}
 			// STOP Should not be active if Alert State is active
-			else { // dir == 0 == STOP
+			else { // dir == 5 == STOP
 				// do nothing
 			}
 		}
