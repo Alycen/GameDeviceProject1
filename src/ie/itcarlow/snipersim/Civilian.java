@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.badlogic.gdx.math.Vector2;
+import java.util.Random;
 
 public class Civilian {
 	private Vector2 m_position;
@@ -28,14 +29,34 @@ public class Civilian {
 	}
 	
 	public void Move() {
-		int timer = 0;
-		int target = 30 * 2; // assuming 30 frames per second in eclipse -> might use a rand num generator for the seconds
-		// do random number thing to decide direction
-		for ( ; timer <= target; timer ++ ) {
-			m_position.x += 2; // need to take scale into consideration too - > only going right for test purposes
-		}
-		if (timer == target) {
-			timer = 0;
+		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way
+		int timer = 30 * 3; // assuming 30 frames per second in eclipse
+		int UP = 0, DOWN = 1, LEFT = 3, RIGHT = 4, STOP = 5;
+		Random rand = new Random();
+		
+		int dir = rand.nextInt((RIGHT + 1) - UP) + UP;
+		
+		for ( ; timer >= 0 ; timer -- ) {
+			if ( timer == 0 ) {
+				timer = 30 * 3;
+				dir = rand.nextInt((RIGHT + 1) - UP) + UP;
+			}
+			
+			if ( dir == UP ) {
+				m_position.y -= 1;
+			}
+			else if ( dir == DOWN ) {
+				m_position.y += 1;
+			}
+			else if ( dir == LEFT ) {
+				m_position.x -= 2;
+			}
+			else if ( dir == RIGHT ) {
+				m_position.x += 2;
+			}
+			else { // dir == 0 == STOP
+				// do nothing
+			}
 		}
 	}
 	
