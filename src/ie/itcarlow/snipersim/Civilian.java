@@ -1,10 +1,12 @@
 package ie.itcarlow.snipersim;
 
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.entity.sprite.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
@@ -13,24 +15,24 @@ public class Civilian {
 	private Vector2 m_position;
 	private BitmapTextureAtlas mTexture, mMarkTexture;
 	private ITextureRegion mTextureRegion, mMarkTextureRegion;
-	private Sprite mSprite, markSprite;
+	private Sprite mSprite, mMarkSprite;
 	private float m_width = 23, m_height = 49, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
-	//(States) Normal, Alert - > ENUMS??? that effect the Move() method??
+	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
 	
-	public void Load(BitmapTextureAtlas texAtlasCiv, ITextureRegion texRegionCiv , BitmapTextureAtlas texAtlasMark, ITextureRegion texRegionMark) { // Civilians will not be touch regions just drawn on sprites -> need to look more into sprites
-		mTexture = texAtlasCiv;
-		mMarkTexture = texAtlasMark;
-		mTextureRegion = texRegionCiv;
-		mMarkTextureRegion = texRegionMark;
+	
+	public void Load(BaseGameActivity base, Scene scene) {
+		mTexture = new BitmapTextureAtlas(base.getTextureManager(),23,49);
+		mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, base, "tempNPC.png", 0,0);
+		mMarkTexture = new BitmapTextureAtlas(base.getTextureManager(),5,8);
+		mMarkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMarkTexture, base, "mark.png", 0,0);
 		mTexture.load();
 		mMarkTexture.load();
 		
-		// right now Images are being made in main() then passed here then will have to be passed back to attach to scene
+		mSprite = new Sprite(100,100, mTextureRegion, base.getEngine().getVertexBufferObjectManager());
+		mMarkSprite = new Sprite(110, 90, mMarkTextureRegion, base.getEngine().getVertexBufferObjectManager());
 		
-		// temp position at 100 100 
-		mSprite = new Sprite(100, 100, this.mTextureRegion, GameActivity.mEngine.getVertexBufferObjectManager());
-		// markSprite will only draw when object is marked and will draw over the targets head
+		scene.attachChild(mSprite);
 	}
 	
 	public void Move() {
@@ -38,6 +40,7 @@ public class Civilian {
 		int timer = 30 * 3; // assuming 30 frames per second in eclipse
 		int UP = 0, DOWN = 1, LEFT = 3, RIGHT = 4, STOP = 5;
 		Random rand = new Random();
+		int verticleSpeed = 1, horizontalSpeed = 2;
 		
 		int dir = rand.nextInt((RIGHT + 1) - UP) + UP;
 		
@@ -48,17 +51,18 @@ public class Civilian {
 			}
 			
 			if ( dir == UP ) {
-				m_position.y -= 1;
+				m_position.y -= verticleSpeed;
 			}
 			else if ( dir == DOWN ) {
-				m_position.y += 1;
+				m_position.y += verticleSpeed;
 			}
 			else if ( dir == LEFT ) {
-				m_position.x -= 2;
+				m_position.x -= horizontalSpeed;
 			}
 			else if ( dir == RIGHT ) {
-				m_position.x += 2;
+				m_position.x += horizontalSpeed;
 			}
+			// STOP Should not be active if Alert State is active
 			else { // dir == 0 == STOP
 				// do nothing
 			}

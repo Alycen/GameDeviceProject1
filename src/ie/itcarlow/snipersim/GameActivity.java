@@ -83,13 +83,7 @@ public class GameActivity extends BaseGameActivity implements IUpdateHandler {
 
     private void loadGfx() {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        //pass civilian textures here
-    	BitmapTextureAtlas civSprite = new BitmapTextureAtlas(getTextureManager(),23,49);
-    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tempNPC.png", 0, 0);
-    	//Make mark sprite and also pass it to the load method in civilian
-    	BitmapTextureAtlas markSprite = new BitmapTextureAtlas(getTextureManager(),5,8);
-    	ITextureRegion markRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(markSprite, this, "mark.png", 0,0);
-    	civTest.Load(civSprite, civRegion, markSprite, markRegion);
+    	civTest.Load(this, mScene);
         //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();
