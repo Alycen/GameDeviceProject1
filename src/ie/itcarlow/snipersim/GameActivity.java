@@ -76,12 +76,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 /*
     private void loadGfx() {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        //pass civilian textures here
-    	BitmapTextureAtlas civSprite = new BitmapTextureAtlas(getTextureManager(),23,49);
-    	ITextureRegion civRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(civSprite, this, "tempNPC.png", 0, 0);
-    	//Make mark sprite and also pass it to the load method in civilian
-    	BitmapTextureAtlas markSprite = new BitmapTextureAtlas(getTextureManager(),5,8);
-    	ITextureRegion markRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(markSprite, this, "mark.png", 0,0);
+    	civTest.Load(this, mScene);
         //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
         //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
         //mTextureAustrianBear.load();
@@ -92,10 +87,17 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
   	public Scene onCreateScene() 
     {
     	SceneManager.getInstance().setMenuScene();
+    	//Gonna have to do this in gameScene
+		//	mScene.attachChild(civTest.getCivSprite());
     	
     	return SceneManager.getInstance().getCurrentScene();
   	}
     
+<<<<<<< HEAD
+=======
+    @Override
+	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
+
 
     @Override
     protected void onDestroy() {
