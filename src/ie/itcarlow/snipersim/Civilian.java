@@ -16,7 +16,7 @@ public class Civilian {
 	private BitmapTextureAtlas mTexture, mMarkTexture;
 	private ITextureRegion mTextureRegion, mMarkTextureRegion;
 	private Sprite mSprite, mMarkSprite;
-	private float m_width = 23, m_height = 49, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
+	private float m_width = 23, m_markWidth = 5, m_height = 49, m_markHeight = 8, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
 	
@@ -25,13 +25,13 @@ public class Civilian {
 	}
 	
 	public void Load(BaseGameActivity base, Scene scene) {
-		mTexture = new BitmapTextureAtlas(base.getTextureManager(),23,49);
+		mTexture = new BitmapTextureAtlas(base.getTextureManager(),(int)m_width * (int)m_scale,(int)m_height * (int)m_scale);
 		mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, base, "tempNPC.png", 0,0);
-		mMarkTexture = new BitmapTextureAtlas(base.getTextureManager(),5,8);
+		mMarkTexture = new BitmapTextureAtlas(base.getTextureManager(),(int)m_markWidth * (int)m_scale, (int)m_markHeight * (int)m_scale);
 		mMarkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMarkTexture, base, "mark.png", 0,0);
 		mTexture.load();
 		mMarkTexture.load();
-		
+		//order could be wrong here not sure 
 		mSprite = new Sprite(m_position.x, m_position.y, mTextureRegion, base.getEngine().getVertexBufferObjectManager());
 		mMarkSprite = new Sprite(m_markPosition.x, m_markPosition.y, mMarkTextureRegion, base.getEngine().getVertexBufferObjectManager());
 		
@@ -39,12 +39,11 @@ public class Civilian {
 	}
 	
 	public void Move() {
-		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way
+		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way // or increase / decrease movement speed
 		int timer = 30 * 3; // assuming 30 frames per second in eclipse
 		int UP = 0, DOWN = 1, LEFT = 3, RIGHT = 4, STOP = 5;
 		Random rand = new Random();
 		int verticleSpeed = 1, horizontalSpeed = 2; // if in different we can change the speeds here to imply running
-		
 		int dir = rand.nextInt((STOP + 1) - UP) + UP;
 		
 		for ( ; timer >= 0 ; timer -- ) {
@@ -52,7 +51,8 @@ public class Civilian {
 				timer = 30 * 3;
 				dir = rand.nextInt((STOP + 1) - UP) + UP;
 			}
-			
+			// need a sub timer for the movement to look good, 
+			// look up disco zoo as reference to the ideal sprite movement
 			if ( dir == UP ) {
 				m_position.y -= verticleSpeed;
 			}
