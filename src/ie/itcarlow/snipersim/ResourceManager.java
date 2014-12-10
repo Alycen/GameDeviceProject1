@@ -23,14 +23,27 @@ public class ResourceManager {
 	public VertexBufferObjectManager vbom;
 
 	//Menu
-	private BitmapTextureAtlas play_button_atlas;
-	public ITextureRegion play_button_region;
+	private BitmapTextureAtlas m_play_a;
+	public ITextureRegion m_play_r;
 	
-	private BitmapTextureAtlas exit_button_atlas;
-	public ITextureRegion exit_button_region;
+	private BitmapTextureAtlas m_exit_a;
+	public ITextureRegion m_exit_r;
+	
+	private BitmapTextureAtlas m_bg_a;
+	public ITextureRegion m_bg_r;
 	
 	//Game
+	private BitmapTextureAtlas g_dlvl_a;
+	public ITextureRegion g_dlvl_r;
 	
+	private BitmapTextureAtlas g_l_city_a;
+	public ITextureRegion g_l_city_r;
+	
+	private BitmapTextureAtlas g_l_tent_a;
+	public ITextureRegion g_l_tent_r;
+	
+	private BitmapTextureAtlas g_scope_a;
+	public ITextureRegion g_scope_r;
 	
 	//
 	
@@ -49,34 +62,61 @@ public class ResourceManager {
 	public void loadMenuResources(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-        //mScopeTexture = new BitmapTextureAtlas(getTextureManager(), 739, 491);  
-        //mScopeTR = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mScopeTexture, this, "Scope.png", 0, 0);
-        //mScopeTexture.load();
+		//Play button
+		m_play_a = new BitmapTextureAtlas(activity.getTextureManager(), 256, 64, TextureOptions.BILINEAR);
+		m_play_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(m_play_a, activity, "menu/buttonPlay.png", 0, 0);
+		m_play_a.load();
 		
-		play_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 256, 64, TextureOptions.BILINEAR);
-		play_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(play_button_atlas, activity, "buttonPlay.png", 0, 0);
-		play_button_atlas.load();
+		//Exit button
+		m_exit_a = new BitmapTextureAtlas(activity.getTextureManager(), 256, 64, TextureOptions.BILINEAR);
+		m_exit_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(m_exit_a, activity, "menu/buttonExit.png", 0, 0);
+		m_exit_a.load();
 		
-		exit_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
-		exit_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(exit_button_atlas, activity, "buttonExit.png", 0, 0);
-		exit_button_atlas.load();
-		
+		//Menu background
+		m_bg_a = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 512, TextureOptions.BILINEAR);
+		m_bg_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(m_bg_a, activity, "menu/bg.png", 0, 0);
+		m_bg_a.load();
 	}
 	
 	public void unloadMenuResources() {
-		play_button_atlas.unload();
-		play_button_atlas = null;
+		m_play_a.unload();
+		m_play_a = null;
 		
-		exit_button_atlas.unload();
-		exit_button_atlas = null;
+		m_exit_a.unload();
+		m_exit_a = null;
 	}
 	
 	public void loadGameResources(){
+		//Default level
+		g_dlvl_a = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 512, TextureOptions.BILINEAR);
+		g_dlvl_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(g_dlvl_a, activity, "game/deflevel.png", 0, 0);
+		g_dlvl_a.load();
 		
+		//City level
+		g_l_city_a = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 512, TextureOptions.BILINEAR);
+		g_l_city_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(g_l_city_a, activity, "game/city.jpg", 0, 0);
+		g_l_city_a.load();
+		
+		//Tent level
+		g_l_tent_a = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 512, TextureOptions.BILINEAR);
+		g_l_tent_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(g_l_tent_a, activity, "game/tent.jpg", 0, 0);
+		g_l_tent_a.load();
+		
+		//Scope texture
+		g_scope_a = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 512, TextureOptions.BILINEAR);
+		g_scope_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(g_scope_a, activity, "game/scope.png", 0, 0);
+		g_scope_a.load();
 	}
 	
 	public void unloadGameResources(){
-
+		g_l_city_a.unload();
+		g_l_city_a = null;
+		
+		g_l_tent_a.unload();
+		g_l_tent_a = null;
+		
+		g_dlvl_a.unload();
+		g_dlvl_a = null;
 	}
 	
 	public void loadFonts(){

@@ -93,12 +93,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     	return SceneManager.getInstance().getCurrentScene();
   	}
     
-<<<<<<< HEAD
-=======
-    @Override
-	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback cb) throws Exception { 
-
-
     @Override
     protected void onDestroy() {
     	super.onDestroy();
