@@ -41,7 +41,7 @@ public class Civilian {
 	public void Move() {
 		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way // or increase / decrease movement speed
 		int timer = 30 * 3; // assuming 30 frames per second in eclipse
-		int UP = 0, DOWN = 1, LEFT = 3, RIGHT = 4, STOP = 5;
+		int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4, STOP = 5;
 		Random rand = new Random();
 		int verticleSpeed = 1, horizontalSpeed = 2; // if in different we can change the speeds here to imply running
 		int dir = rand.nextInt((STOP + 1) - UP) + UP;
