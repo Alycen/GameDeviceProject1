@@ -9,6 +9,9 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.entity.sprite.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import ie.itcarlow.snipersim.scene.SceneManager.SceneType;
+
 import java.util.Random;
 
 public class Civilian {
@@ -133,5 +136,12 @@ public class Civilian {
 	public void setShot(boolean shoot) {
 		m_shot = shoot;
 	}
+	
+	//////////////////////////////////////
+	// SWITCH STATEMENTS
+	//////////////////////////////////////
+	
+	
+	
 }
 
