@@ -42,14 +42,7 @@ public class Level {
 	
 	//Update
 		//Actual panning
-		
 	
-	//Draw
-	public void Draw()
-	{
-		//Draw the level
-	}
-	//
 	
 	
 }

@@ -24,6 +24,11 @@ public class Civilian {
 		
 	}
 	
+	public enum State {
+		DEFAULT_STATE,
+		ALERT_STATE,
+	 }
+	
 	public void Load(BaseGameActivity base, Scene scene) {
 		mTexture = new BitmapTextureAtlas(base.getTextureManager(),(int)m_width * (int)m_scale,(int)m_height * (int)m_scale);
 		mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, base, "tempNPC.png", 0,0);
