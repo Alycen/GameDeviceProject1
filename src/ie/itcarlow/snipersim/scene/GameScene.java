@@ -1,5 +1,6 @@
 package ie.itcarlow.snipersim.scene;
 
+import ie.itcarlow.snipersim.Civilian;
 import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
@@ -10,6 +11,8 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 
 public class GameScene extends BaseScene{
 	
+	Level level_1;
+	
 	int curLevel = 0;
 	int maxLevel = 1;
 	
@@ -19,11 +22,18 @@ public class GameScene extends BaseScene{
 	@Override
 	public void createScene() {
 		setLevel(curLevel);
+
+		level_1 = new Level();
 		
 		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom);
 		
 		spr_scope.setVisible(false);
 		
+		attachChild(level_1.civ.getCivSprite());
+		for (int i = 0; i < 5; i ++) {
+			//level_1.civArray.get(i).setPosition(10.0f * (float)i, 20.0f * (float)i);
+			attachChild(level_1.civArray.get(i).getCivSprite());
+		}
 		attachChild(spr_scope);
 	}
 
