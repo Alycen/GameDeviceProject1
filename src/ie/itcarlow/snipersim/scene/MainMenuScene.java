@@ -19,6 +19,7 @@ public class MainMenuScene extends BaseScene{
 		
 	private Sprite play;
 	private Sprite exit;
+	private Sprite audio;
 	private Sprite bg;
 	
 	@Override
@@ -37,6 +38,7 @@ public class MainMenuScene extends BaseScene{
 								
 				if(pSceneTouchEvent.isActionUp())
 				{
+					ResourceManager.getInstance().activity.buttonPress();
 					SceneManager.getInstance().setGameScene();
 				}
 				
@@ -52,7 +54,24 @@ public class MainMenuScene extends BaseScene{
 			{			
 				if(pSceneTouchEvent.isActionUp())
 				{
+					ResourceManager.getInstance().activity.buttonPress();
 					System.exit(0);
+				}
+				
+				return true;
+			}
+		};
+		
+		//music button
+		audio = new Sprite(20, 20, ResourceManager.getInstance().m_audio_r, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLoxalY)
+			{			
+				if(pSceneTouchEvent.isActionUp())
+				{
+					activity.buttonPress();
+					activity.toggleAudio();
 				}
 				
 				return true;
@@ -62,10 +81,17 @@ public class MainMenuScene extends BaseScene{
 		//Attach to the scene
 		attachChild(play);
 		attachChild(exit);
+		attachChild(audio);
 		
 		//Register as touchable
 		registerTouchArea(play);
 		registerTouchArea(exit);
+		registerTouchArea(audio);
+		
+		if(activity.getAudio())
+		{
+			ResourceManager.getInstance().m_menu_bgm.play();
+		}
 	}
 
 	@Override

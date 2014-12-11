@@ -35,6 +35,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 
 	private float m_camSpeed = 4;
 	private SmoothCamera m_camera;
+	private boolean audio = true;
 	
 	Civilian civTest;
 	
@@ -73,15 +74,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     	//Prepare Resource Manager
     	ResourceManager.prepareManager(this.getEngine(), this, m_camera, this.getVertexBufferObjectManager());
     }
-/*
-    private void loadGfx() {
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-    	civTest.Load(this, mScene);
-        //mTextureAustrianBear = new BitmapTextureAtlas(getTextureManager(), 46, 54);  
-        //mAustrianBearTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTextureAustrianBear, this, "austrian_bear.png", 0, 0);
-        //mTextureAustrianBear.load();
-    }
-    */
 
     @Override
   	public Scene onCreateScene() 
@@ -106,6 +98,24 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     			SceneManager.getInstance().getCurrentScene().onBackPressed();
     		}
     	return false;
+    }
+    
+    public boolean getAudio()
+    {
+    	return audio;
+    }
+    
+    public void toggleAudio()
+    {
+    	audio = !audio;
+    }
+    
+    public void buttonPress()
+    {
+    	if (audio)
+    	{
+    		ResourceManager.getInstance().m_click.play();
+    	}
     }
     
 	// ===========================================================

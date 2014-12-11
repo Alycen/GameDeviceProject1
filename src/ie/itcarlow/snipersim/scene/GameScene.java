@@ -1,8 +1,8 @@
 package ie.itcarlow.snipersim.scene;
 
+import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -12,17 +12,18 @@ public class GameScene extends BaseScene{
 	int curLevel = 0;
 	int maxLevel = 1;
 	
-	Sprite scope;
+	Sprite spr_level;
+	Sprite spr_scope;
 	
 	@Override
 	public void createScene() {
 		setLevel(curLevel);
 		
-		scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom);
+		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom);
 		
-		scope.setVisible(false);
+		spr_scope.setVisible(false);
 		
-		attachChild(scope);
+		attachChild(spr_scope);
 	}
 
 	@Override
@@ -50,31 +51,41 @@ public class GameScene extends BaseScene{
 			temp = ResourceManager.getInstance().g_l_tent_r;
 			break;
 		default:
-			temp = ResourceManager.getInstance().g_dlvl_r;
+			temp = ResourceManager.getInstance().g_l_def_r;
 			break;
 		}
 
-		Sprite bg = new Sprite(0, 0, temp, vbom)
+		setLevelBG(temp);
+		
+		//Actually set background
+		attachChild(spr_level);
+	}
+	
+	public void setLevel(Level lev)
+	{
+		setLevelBG(lev.m_texture);
+	}
+	
+	private void setLevelBG(ITextureRegion levtex)
+	{
+		spr_level = new Sprite(0, 0, levtex, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLoxalY)
 			{
 				if(pSceneTouchEvent.isActionDown())
 				{
-					scope.setVisible(true);
+					spr_scope.setVisible(true);
 				}
 				
 				if(pSceneTouchEvent.isActionUp())
 				{
-					scope.setVisible(false);
+					spr_scope.setVisible(false);
 				}
 				
 				return true;
 			}
 		};
-		
-		//Actually set background
-		setBackground(new SpriteBackground(0, 0, 0, bg));
 	}
 	
 	private void nextLevel() {
