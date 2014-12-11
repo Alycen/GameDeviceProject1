@@ -75,7 +75,10 @@ public class MainMenuScene extends BaseScene{
 					
 					//If we turned audio on and it's not, play
 					if (activity.getAudio())
+					{
+						bgm.seekTo(0);
 						bgm.play();
+					}	
 				}
 				
 				return true;
