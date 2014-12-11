@@ -1,18 +1,15 @@
 package ie.itcarlow.snipersim;
 
+import java.util.Random;
+
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
-import org.andengine.entity.sprite.Sprite;
+import ie.itcarlow.snipersim.scene.SceneManager;
+
 import com.badlogic.gdx.math.Vector2;
-
-import ie.itcarlow.snipersim.scene.SceneManager.SceneType;
-
-import java.util.Random;
 
 public class Civilian {
 	private Vector2 m_position, m_markPosition;
@@ -23,8 +20,16 @@ public class Civilian {
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
 	
-	public void Init() {
+	public Civilian() {
+		m_position = new Vector2(25,25);
+		Load(ResourceManager.getInstance().activity, SceneManager.getInstance().getCurrentScene());
 		
+	}
+	
+	public Civilian(float x, float y) {
+		//m_position.x = x;
+		//m_position.y = y;
+		mSprite = new Sprite(x, y, ResourceManager.getInstance().g_civ_r, ResourceManager.getInstance().activity.getVertexBufferObjectManager());
 	}
 	
 	public enum State {
@@ -33,17 +38,7 @@ public class Civilian {
 	 }
 	
 	public void Load(BaseGameActivity base, Scene scene) {
-		mTexture = new BitmapTextureAtlas(base.getTextureManager(),(int)m_width * (int)m_scale,(int)m_height * (int)m_scale);
-		mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mTexture, base, "tempNPC.png", 0,0);
-		mMarkTexture = new BitmapTextureAtlas(base.getTextureManager(),(int)m_markWidth * (int)m_scale, (int)m_markHeight * (int)m_scale);
-		mMarkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMarkTexture, base, "mark.png", 0,0);
-		mTexture.load();
-		mMarkTexture.load();
-		//order could be wrong here not sure 
-		mSprite = new Sprite(m_position.x, m_position.y, mTextureRegion, base.getEngine().getVertexBufferObjectManager());
-		mMarkSprite = new Sprite(m_markPosition.x, m_markPosition.y, mMarkTextureRegion, base.getEngine().getVertexBufferObjectManager());
-		
-		scene.attachChild(mSprite);
+		mSprite = new Sprite(m_position.x, m_position.y, ResourceManager.getInstance().g_civ_r, base.getEngine().getVertexBufferObjectManager());
 	}
 	
 	public void Move() {
@@ -96,6 +91,13 @@ public class Civilian {
 		return m_position;
 	}
 	
+	public float getX() {
+		return m_position.x;
+	}
+	public float getY() {
+		return m_position.y;
+	}
+	
 	public boolean Marked() { // in level class ??
 		// if(screen taped && crosshair in sprite area)
 		//		shot = true; 
@@ -125,8 +127,16 @@ public class Civilian {
 		m_scale = scale;
 	}
 	
-	public void setPosition(Vector2 position) {
-		m_position = position;
+	public void setPosition(float x, float y) {
+		m_position.x = x;
+		m_position.y = y;
+	}
+	
+	public void setX(float x) {
+		m_position.x = x;
+	}
+	public void setY(float y) {
+		m_position.y = y;
 	}
 	
 	public void setMarked(boolean mark) {

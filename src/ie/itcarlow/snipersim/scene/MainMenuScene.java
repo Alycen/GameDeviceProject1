@@ -1,7 +1,6 @@
 package ie.itcarlow.snipersim.scene;
 
 import ie.itcarlow.snipersim.ResourceManager;
-
 import org.andengine.audio.music.Music;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.background.SpriteBackground;
@@ -21,7 +20,6 @@ public class MainMenuScene extends BaseScene{
 	@Override
 	public void createScene() {
 		setBackground(new Background(Color.BLACK));
-		
 		bg = new Sprite(0, 0, ResourceManager.getInstance().m_bg_r, vbom);
 		setBackground(new SpriteBackground(0, 0, 0, bg));
 		
