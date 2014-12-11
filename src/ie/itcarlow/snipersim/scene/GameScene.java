@@ -3,6 +3,7 @@ package ie.itcarlow.snipersim.scene;
 import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -58,7 +59,7 @@ public class GameScene extends BaseScene{
 		setLevelBG(temp);
 		
 		//Actually set background
-		attachChild(spr_level);
+		setBackground(new SpriteBackground(spr_level));
 	}
 	
 	public void setLevel(Level lev)

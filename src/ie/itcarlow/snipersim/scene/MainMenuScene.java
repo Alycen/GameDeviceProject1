@@ -2,17 +2,11 @@ package ie.itcarlow.snipersim.scene;
 
 import ie.itcarlow.snipersim.ResourceManager;
 
-import org.andengine.engine.camera.Camera;
+import org.andengine.audio.music.Music;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.background.SpriteBackground;
-import org.andengine.entity.scene.menu.MenuScene;
-import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
-import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.SpriteMenuItem;
-import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.util.GLState;
 import org.andengine.util.color.Color;
 
 public class MainMenuScene extends BaseScene{
@@ -22,9 +16,11 @@ public class MainMenuScene extends BaseScene{
 	private Sprite audio;
 	private Sprite bg;
 	
+	private Music bgm;
+	
 	@Override
 	public void createScene() {
-		setBackground(new Background(Color.CYAN));
+		setBackground(new Background(Color.BLACK));
 		
 		bg = new Sprite(0, 0, ResourceManager.getInstance().m_bg_r, vbom);
 		setBackground(new SpriteBackground(0, 0, 0, bg));
@@ -55,7 +51,7 @@ public class MainMenuScene extends BaseScene{
 				if(pSceneTouchEvent.isActionUp())
 				{
 					ResourceManager.getInstance().activity.buttonPress();
-					System.exit(0);
+					//System.exit(0);
 				}
 				
 				return true;
@@ -72,6 +68,14 @@ public class MainMenuScene extends BaseScene{
 				{
 					activity.buttonPress();
 					activity.toggleAudio();
+					
+					//If music is playing stop it
+					if (!activity.getAudio() && bgm.isPlaying())
+						bgm.pause();
+					
+					//If we turned audio on and it's not, play
+					if (activity.getAudio())
+						bgm.play();
 				}
 				
 				return true;
@@ -88,9 +92,12 @@ public class MainMenuScene extends BaseScene{
 		registerTouchArea(exit);
 		registerTouchArea(audio);
 		
+		//Audio handling
+		bgm = ResourceManager.getInstance().m_menu_bgm;
+		
 		if(activity.getAudio())
 		{
-			ResourceManager.getInstance().m_menu_bgm.play();
+			bgm.play();
 		}
 	}
 

@@ -3,7 +3,6 @@ package ie.itcarlow.snipersim.scene;
 import ie.itcarlow.snipersim.ResourceManager;
 
 import org.andengine.engine.Engine;
-import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
 public class SceneManager {
 

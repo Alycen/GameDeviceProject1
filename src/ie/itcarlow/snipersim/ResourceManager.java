@@ -35,6 +35,7 @@ public class ResourceManager {
 	public ITextureRegion m_play_r;
 	public ITextureRegion m_exit_r;
 	public ITextureRegion m_audio_r;
+	public ITextureRegion m_audio_off_r;
 	
 	public ITextureRegion m_bg_r;
 	
@@ -84,6 +85,7 @@ public class ResourceManager {
 		
 		//Audio button
 		m_audio_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonAudio.png");
+		m_audio_off_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonAudioOff.png");
 		
 		//Menu background
 		m_bg_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/bg.png");
