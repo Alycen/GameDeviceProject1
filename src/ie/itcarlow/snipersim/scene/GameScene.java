@@ -1,9 +1,9 @@
 package ie.itcarlow.snipersim.scene;
 
-import ie.itcarlow.snipersim.Civilian;
 import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
+import org.andengine.audio.music.Music;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -18,6 +18,8 @@ public class GameScene extends BaseScene{
 	
 	Sprite spr_level;
 	Sprite spr_scope;
+	
+	private Music bgm;
 	
 	@Override
 	public void createScene() {
@@ -35,6 +37,15 @@ public class GameScene extends BaseScene{
 			attachChild(level_1.civArray.get(i).getCivSprite());
 		}
 		attachChild(spr_scope);
+
+		//Audio handling
+		bgm = ResourceManager.getInstance().g_game_bgm;
+		
+		if(activity.getAudio())
+		{
+			bgm.play();
+		}
+		
 	}
 
 	@Override
@@ -46,6 +57,7 @@ public class GameScene extends BaseScene{
 	@Override
 	public void disposeScene() {
 		this.detachChildren();
+		bgm.stop();
 	}
 	
 	private void setLevel(int level) {

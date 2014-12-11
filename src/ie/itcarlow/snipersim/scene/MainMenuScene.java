@@ -49,7 +49,7 @@ public class MainMenuScene extends BaseScene{
 				if(pSceneTouchEvent.isActionUp())
 				{
 					ResourceManager.getInstance().activity.buttonPress();
-					//System.exit(0);
+					System.exit(0);
 				}
 				
 				return true;
@@ -111,6 +111,7 @@ public class MainMenuScene extends BaseScene{
 	public void disposeScene(){
 		//Detach all children
 		this.detachChildren();
+		bgm.stop();
 		
 		ResourceManager.getInstance().unloadMenuResources();
 	}	

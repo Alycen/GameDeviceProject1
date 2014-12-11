@@ -55,7 +55,7 @@ public class ResourceManager {
 	
 	public ITextureRegion g_civ_r;
 	
-	public Music m_game_bgm;
+	public Music g_game_bgm;
 	
 	
 	public static ResourceManager getInstance() {
@@ -127,7 +127,6 @@ public class ResourceManager {
 		menu_atlas.unload();
 		menu_atlas = null;
 		m_menu_bgm = null;
-		
 	}
 	
 	public void loadGameResources(){
@@ -163,7 +162,7 @@ public class ResourceManager {
     	//Load game bgm
     	try
     	{
-    	    m_menu_bgm = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"gamebgm.ogg");
+    	    g_game_bgm = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"gamebgm.ogg");
     	}
     	catch (IOException e)
     	{
@@ -176,6 +175,7 @@ public class ResourceManager {
 	public void unloadGameResources(){
 		game_atlas.unload();
 		game_atlas = null;
+		
 	}
 	
 	public void loadFonts(){
