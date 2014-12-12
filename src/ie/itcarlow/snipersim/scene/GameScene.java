@@ -3,41 +3,54 @@ package ie.itcarlow.snipersim.scene;
 import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
+import java.util.ArrayList;
+
 import org.andengine.audio.music.Music;
+import org.andengine.entity.Entity;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-public class GameScene extends BaseScene{
+public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
-	Level level_1;
+	public final ArrayList<Level> levelList  = new ArrayList<Level>();
 	
 	int curLevel = 0;
-	int maxLevel = 1;
 	
 	Sprite spr_level;
 	Sprite spr_scope;
+	
+	IEntity lSprite;
+	IEntity lScope;
 	
 	private Music bgm;
 	
 	@Override
 	public void createScene() {
-		setLevel(curLevel);
-
-		level_1 = new Level();
+		//Set up layers
+		lSprite = new Entity();
+		lScope = new Entity();
 		
+		attachChild(lSprite);
+		attachChild(lScope);
+		
+		
+		//Set up levels
+		levelList.add(new Level(ResourceManager.getInstance().g_l_tent_r, 1));
+		levelList.add(new Level(ResourceManager.getInstance().g_l_city_r, 6));
+		
+		//set level
+		loadLevel(0);
+		
+		//set up scope
 		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom);
-		
 		spr_scope.setVisible(false);
 		
-		attachChild(level_1.civ.getCivSprite());
-		for (int i = 0; i < 5; i ++) {
-			//level_1.civArray.get(i).setPosition(10.0f * (float)i, 20.0f * (float)i);
-			attachChild(level_1.civArray.get(i).getCivSprite());
-			
-		}
-		attachChild(spr_scope);
+		lScope.attachChild(spr_scope);
 
 		//Audio handling
 		bgm = ResourceManager.getInstance().g_game_bgm;
@@ -46,6 +59,8 @@ public class GameScene extends BaseScene{
 		{
 			bgm.play();
 		}
+		
+		this.setOnSceneTouchListener(this);
 		
 	}
 
@@ -61,69 +76,58 @@ public class GameScene extends BaseScene{
 		bgm.stop();
 	}
 	
-	private void setLevel(int level) {
-		
-		curLevel = level;
-		ITextureRegion temp;
-		//Set background sprite to level
-		switch (level)
-		{
-		case 0:
-			temp = ResourceManager.getInstance().g_l_city_r;			
-			break;
-		case 1:
-			temp = ResourceManager.getInstance().g_l_tent_r;
-			break;
-		default:
-			temp = ResourceManager.getInstance().g_l_def_r;
-			break;
-		}
-
-		setLevelBG(temp);
-		
-		//Actually set background
-		setBackground(new SpriteBackground(spr_level));
-	}
-	
-	public void setLevel(Level lev)
+	private void loadLevel(int index)
 	{
-		setLevelBG(lev.m_texture);
+		//Unload current level entities
+		levelList.get(curLevel).unloadCivs(lSprite);
+		
+		//set the current level to the new level
+		curLevel = index;
+		
+		//Load background, set entities for new level
+		setLevelBG(levelList.get(index).m_texture);
+		levelList.get(index).loadCivs(lSprite);
 	}
 	
 	private void setLevelBG(ITextureRegion levtex)
 	{
-		spr_level = new Sprite(0, 0, levtex, vbom)
-		{
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLoxalY)
-			{
-				if(pSceneTouchEvent.isActionDown())
-				{
-					spr_scope.setVisible(true);
-				}
-				
-				if(pSceneTouchEvent.isActionUp())
-				{
-					spr_scope.setVisible(false);
-				}
-				
-				return true;
-			}
-		};
+		spr_level = new Sprite(0, 0, levtex, vbom);
+
+		SpriteBackground bg = new SpriteBackground(spr_level);
+		
+		setBackground(bg);
 	}
 	
 	private void nextLevel() {
-		if (curLevel + 1 <= maxLevel)
+		int maxLevel = levelList.size();
+		
+		if (curLevel + 1 < maxLevel)
 		{
-			setLevel(curLevel + 1);
+			loadLevel(curLevel + 1);
 		}
 		
-		else setLevel(0);
+		else loadLevel(0);
 	}
 
 	@Override
 	public void onUpdate() {
 		// TODO Auto-generated method stub
-		level_1.Update();
+		levelList.get(curLevel).Update();
+	}
+
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		
+		if(pSceneTouchEvent.isActionDown())
+		{
+			spr_scope.setVisible(true);
+		}
+		
+		if(pSceneTouchEvent.isActionUp())
+		{
+			spr_scope.setVisible(false);
+		}
+		
+		return true;
 	}
 }

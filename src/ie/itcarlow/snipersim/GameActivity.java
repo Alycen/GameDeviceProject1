@@ -31,7 +31,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	private SmoothCamera m_camera;
 	private boolean audio = true;
 	
-	Civilian civTest;
 	
 	// ===========================================================
 	// Constructors

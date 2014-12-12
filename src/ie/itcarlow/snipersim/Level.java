@@ -1,15 +1,18 @@
 package ie.itcarlow.snipersim;
 
 
+import ie.itcarlow.snipersim.scene.BaseScene;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.andengine.entity.IEntity;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 public class Level {
 	//==========//Variables
 	public Civilian civ;
-	public ArrayList<Civilian> civArray = new ArrayList<Civilian>();
+	public final ArrayList<Civilian> civArray = new ArrayList<Civilian>();
 	
 	public final ITextureRegion m_texture;
 	Random rand = new Random();
@@ -19,16 +22,26 @@ public class Level {
 	//=====//Make & Load
 	
 	//Constructor
-	public Level() {
-		m_texture = ResourceManager.getInstance().g_l_tent_r;
-		civ = new Civilian();
-		for (int i = 0; i < 5; i ++) {
+	public Level(ITextureRegion texture, int civNum) {
+		m_texture = texture;
+		
+		for (int i = 0; i < civNum; i ++) {
 			civArray.add(new Civilian(rand.nextInt((250 + 30)+ 30), rand.nextInt((200 + 30)+ 30) ));
 		}
 	}
-	public Level(ITextureRegion texture)
+	
+	public void loadCivs(IEntity ent)
 	{
-		m_texture = texture;
+		for (int i = 0, max = civArray.size(); i < max; i ++) {
+			ent.attachChild(civArray.get(i).getCivSprite());
+		}
+	}
+	
+	public void unloadCivs(IEntity ent)
+	{
+		for (int i = 0, max = civArray.size(); i < max; i ++) {
+			ent.detachChild(civArray.get(i).getCivSprite());
+		}
 	}
 	
 	//=====//Movement
@@ -42,7 +55,7 @@ public class Level {
 	
 	//Update
 	public void Update() {
-		for (int i = 0; i < 5; i ++) {
+		for (int i = 0, max = civArray.size(); i < max; i ++) {
 			civArray.get(i).Update();
 		}
 	}
