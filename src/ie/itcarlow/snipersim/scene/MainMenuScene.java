@@ -114,5 +114,11 @@ public class MainMenuScene extends BaseScene{
 		bgm.stop();
 		
 		ResourceManager.getInstance().unloadMenuResources();
+	}
+
+	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+		
 	}	
 }

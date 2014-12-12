@@ -31,4 +31,6 @@ public BaseScene() {
 	public abstract void onBackPressed();
 	
 	public abstract void disposeScene();	
+	
+	public abstract void onUpdate();
 }

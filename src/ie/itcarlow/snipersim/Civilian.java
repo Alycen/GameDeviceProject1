@@ -19,17 +19,23 @@ public class Civilian {
 	private float m_width = 23, m_markWidth = 5, m_height = 49, m_markHeight = 8, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
 	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
+	private int UP = 1,DOWN = 2, LEFT = 3, RIGHT = 4, STOP =5;
+	private int timer = 100;
+
+	Random rand = new Random();
+	private int dir;
 	
 	public Civilian() {
 		m_position = new Vector2(25,25);
 		Load(ResourceManager.getInstance().activity, SceneManager.getInstance().getCurrentScene());
-		
+		dir = rand.nextInt((STOP + 1) - UP) + UP;
 	}
 	
 	public Civilian(float x, float y) {
 		//m_position.x = x;
 		//m_position.y = y;
 		mSprite = new Sprite(x, y, ResourceManager.getInstance().g_civ_r, ResourceManager.getInstance().activity.getVertexBufferObjectManager());
+		dir = rand.nextInt((STOP + 1) - UP) + UP;
 	}
 	
 	public enum State {
@@ -39,39 +45,35 @@ public class Civilian {
 	
 	public void Load(BaseGameActivity base, Scene scene) {
 		mSprite = new Sprite(m_position.x, m_position.y, ResourceManager.getInstance().g_civ_r, base.getEngine().getVertexBufferObjectManager());
+		
 	}
 	
 	public void Move() {
 		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way // or increase / decrease movement speed
-		int timer = 30 * 3; // assuming 30 frames per second in eclipse
-		int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4, STOP = 5;
-		Random rand = new Random();
+				
 		int verticleSpeed = 1, horizontalSpeed = 2; // if in different we can change the speeds here to imply running
-		int dir = rand.nextInt((STOP + 1) - UP) + UP;
 		
-		for ( ; timer >= 0 ; timer -- ) {
-			if ( timer == 0 ) {
-				timer = 30 * 3;
-				dir = rand.nextInt((STOP + 1) - UP) + UP;
-			}
-			// need a sub timer for the movement to look good, 
-			// look up disco zoo as reference to the ideal sprite movement
-			if ( dir == UP ) {
-				m_position.y -= verticleSpeed;
-			}
-			else if ( dir == DOWN ) {
-				m_position.y += verticleSpeed;
-			}
-			else if ( dir == LEFT ) {
-				m_position.x -= horizontalSpeed;
-			}
-			else if ( dir == RIGHT ) {
-				m_position.x += horizontalSpeed;
-			}
-			// STOP Should not be active if Alert State is active
-			else { // dir == 5 == STOP
-				// do nothing
-			}
+		if ( timer == 0 ) {
+			timer = 100;
+			dir = rand.nextInt((STOP + 1) - UP) + UP;
+		}
+		// need a sub timer for the movement to look good, 
+		// look up disco zoo as reference to the ideal sprite movement
+		if ( dir == UP ) {
+			mSprite.setY(mSprite.getY() - verticleSpeed);
+		}
+		else if ( dir == DOWN ) {
+			mSprite.setY(mSprite.getY() + verticleSpeed);
+		}
+		else if ( dir == LEFT ) {
+			mSprite.setX(mSprite.getX() - horizontalSpeed);
+		}
+		else if ( dir == RIGHT ) {
+			mSprite.setX(mSprite.getX() + horizontalSpeed);
+		}
+		// STOP Should not be active if Alert State is active
+		else { // dir == 5 == STOP
+			// do nothing
 		}
 	}
 	

@@ -35,6 +35,7 @@ public class GameScene extends BaseScene{
 		for (int i = 0; i < 5; i ++) {
 			//level_1.civArray.get(i).setPosition(10.0f * (float)i, 20.0f * (float)i);
 			attachChild(level_1.civArray.get(i).getCivSprite());
+			
 		}
 		attachChild(spr_scope);
 
@@ -118,5 +119,11 @@ public class GameScene extends BaseScene{
 		}
 		
 		else setLevel(0);
+	}
+
+	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+		level_1.Update();
 	}
 }

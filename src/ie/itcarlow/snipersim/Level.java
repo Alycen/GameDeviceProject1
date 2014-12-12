@@ -2,6 +2,7 @@ package ie.itcarlow.snipersim;
 
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.andengine.opengl.texture.region.ITextureRegion;
 
@@ -11,6 +12,7 @@ public class Level {
 	public ArrayList<Civilian> civArray = new ArrayList<Civilian>();
 	
 	public final ITextureRegion m_texture;
+	Random rand = new Random();
 	
 	//==========//Methods
 	
@@ -21,7 +23,7 @@ public class Level {
 		m_texture = ResourceManager.getInstance().g_l_tent_r;
 		civ = new Civilian();
 		for (int i = 0; i < 5; i ++) {
-			civArray.add(new Civilian(30.0f * (float)i, 40.0f ));
+			civArray.add(new Civilian(rand.nextInt((250 + 30)+ 30), rand.nextInt((200 + 30)+ 30) ));
 		}
 	}
 	public Level(ITextureRegion texture)
@@ -39,6 +41,11 @@ public class Level {
 	//=====//Update and Draw
 	
 	//Update
+	public void Update() {
+		for (int i = 0; i < 5; i ++) {
+			civArray.get(i).Update();
+		}
+	}
 		//Actual panning
 	
 	

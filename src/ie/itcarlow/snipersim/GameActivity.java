@@ -118,7 +118,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
-				
+		SceneManager.getInstance().getCurrentScene().onUpdate();
 	}
 
 	@Override
