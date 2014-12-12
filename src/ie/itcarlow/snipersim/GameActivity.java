@@ -20,8 +20,8 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	// Constants
 	// ===========================================================
 
-	private static final int CAMERA_WIDTH = 800;
-	private static final int CAMERA_HEIGHT = 480;
+	static final int CAMERA_WIDTH = 800;
+	static final int CAMERA_HEIGHT = 480;
 
 	// ===========================================================
 	// Fields
@@ -75,7 +75,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     	SceneManager.getInstance().setMenuScene();
     	//Gonna have to do this in gameScene
 		//	mScene.attachChild(civTest.getCivSprite());
-    	
+    	mEngine.registerUpdateHandler(this);
     	return SceneManager.getInstance().getCurrentScene();
   	}
     

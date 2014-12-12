@@ -14,11 +14,11 @@ import com.badlogic.gdx.math.Vector2;
 public class Civilian {
 	private Vector2 m_position, m_markPosition;
 	private BitmapTextureAtlas mTexture, mMarkTexture;
-	private ITextureRegion mTextureRegion, mMarkTextureRegion;
+	//private ITextureRegion mTextureRegion, mMarkTextureRegion;
 	private Sprite mSprite, mMarkSprite;
 	private float m_width = 23, m_markWidth = 5, m_height = 49, m_markHeight = 8, m_scale = 1; // that is the width and height of the TEMP sprite for Civilian
 	private boolean m_marked = false, m_shot = false;
-	//(States) Normal, Alert - > ENUMS or ints?? effects the Move() method
+	
 	private int UP = 1,DOWN = 2, LEFT = 3, RIGHT = 4, STOP =5;
 	private int timer = 100;
 
@@ -32,8 +32,6 @@ public class Civilian {
 	}
 	
 	public Civilian(float x, float y) {
-		//m_position.x = x;
-		//m_position.y = y;
 		mSprite = new Sprite(x, y, ResourceManager.getInstance().g_civ_r, ResourceManager.getInstance().activity.getVertexBufferObjectManager());
 		dir = rand.nextInt((STOP + 1) - UP) + UP;
 	}
@@ -52,7 +50,7 @@ public class Civilian {
 		//if statements for each state i.e: if (Normal) move this way, else if (Alert) Move this way // or increase / decrease movement speed
 				
 		int verticleSpeed = 1, horizontalSpeed = 2; // if in different we can change the speeds here to imply running
-		
+		float width = ResourceManager.getInstance().activity.CAMERA_WIDTH, height = ResourceManager.getInstance().activity.CAMERA_HEIGHT;
 		if ( timer == 0 ) {
 			timer = 100;
 			dir = rand.nextInt((STOP + 1) - UP) + UP;
@@ -75,6 +73,21 @@ public class Civilian {
 		else { // dir == 5 == STOP
 			// do nothing
 		}
+		
+		if (mSprite.getX() < 0 && dir == LEFT) {
+			dir = RIGHT;
+		}
+		if (mSprite.getX() > (int)width && dir == RIGHT) {
+			dir = LEFT;
+		}
+		if (mSprite.getY() < 0 && dir == UP) {
+			dir = DOWN;
+		}
+		if (mSprite.getY() > (int)height && dir == DOWN) {
+			dir = UP;
+		}
+		timer --;
+		
 	}
 	
 	public void Update() {
