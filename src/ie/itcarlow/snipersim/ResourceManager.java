@@ -7,7 +7,7 @@ import org.andengine.audio.music.MusicFactory;
 import org.andengine.audio.sound.Sound;
 import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.SmoothCamera;
+import org.andengine.engine.camera.ZoomCamera;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -25,7 +25,7 @@ public class ResourceManager {
 	
 	public Engine engine;
 	public GameActivity activity;
-	public SmoothCamera camera;
+	public ZoomCamera camera;
 	public VertexBufferObjectManager vbom;
 
 	//======Menu
@@ -62,7 +62,7 @@ public class ResourceManager {
 		return INSTANCE;
 	}
 	
-	public static void prepareManager(Engine engine, GameActivity activity, SmoothCamera camera, VertexBufferObjectManager vbom)
+	public static void prepareManager(Engine engine, GameActivity activity, ZoomCamera camera, VertexBufferObjectManager vbom)
 	{
 		getInstance().engine = engine;
 		getInstance().activity = activity;

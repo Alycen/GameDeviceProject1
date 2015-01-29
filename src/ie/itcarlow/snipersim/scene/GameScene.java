@@ -6,6 +6,7 @@ import ie.itcarlow.snipersim.ResourceManager;
 import java.util.ArrayList;
 
 import org.andengine.audio.music.Music;
+import org.andengine.engine.camera.ZoomCamera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -24,20 +25,26 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	Sprite spr_level;
 	Sprite spr_scope;
 	
+	IEntity lBG;
 	IEntity lSprite;
 	IEntity lScope;
+	
+	boolean m_scope;
+	boolean m_shoot;
+	boolean m_taken;
 	
 	private Music bgm;
 	
 	@Override
 	public void createScene() {
 		//Set up layers
+		lBG = new Entity();
 		lSprite = new Entity();
 		lScope = new Entity();
 		
+		attachChild(lBG);
 		attachChild(lSprite);
 		attachChild(lScope);
-		
 		
 		//Set up levels
 		levelList.add(new Level(ResourceManager.getInstance().g_l_tent_r, 1));
@@ -47,9 +54,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		loadLevel(0);
 		
 		//set up scope
-		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom);
-		spr_scope.setVisible(false);
+		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom){
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
+			{
+	              this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+	              return false;
+			}
+		};
 		
+		spr_scope.setVisible(false);
+	    this.registerTouchArea(spr_scope);
 		lScope.attachChild(spr_scope);
 
 		//Audio handling
@@ -91,11 +106,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	private void setLevelBG(ITextureRegion levtex)
 	{
-		spr_level = new Sprite(0, 0, levtex, vbom);
-
-		SpriteBackground bg = new SpriteBackground(spr_level);
+		lBG.detachChild(spr_level);
 		
-		setBackground(bg);
+		spr_level = new Sprite(0, 0, levtex, vbom);
+		
+		lBG.attachChild(spr_level);
 	}
 	
 	private void nextLevel() {
@@ -111,8 +126,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
 	@Override
 	public void onUpdate() {
-		// TODO Auto-generated method stub
 		levelList.get(curLevel).Update();
+		
+		if (m_scope)
+		{
+			spr_scope.setVisible(true);
+			camera.setZoomFactor(1.5f);
+		}
+		
+		if (!m_scope)
+		{
+			spr_scope.setVisible(false);
+			camera.setCenter(camera.getWidth() / 2, camera.getHeight() / 2);
+			camera.setZoomFactor(1f);
+		}
+		
+		
 	}
 
 	@Override
@@ -120,12 +149,35 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		if(pSceneTouchEvent.isActionDown())
 		{
-			spr_scope.setVisible(true);
+			//If we're not zoomed, zoom in
+			if (!m_scope)
+			{
+				m_scope = true;
+			}
+			
+			//Otherwise shoot (Second touch)
+			else
+			{
+				m_shoot = true;
+			}
 		}
 		
+		//Release scope
 		if(pSceneTouchEvent.isActionUp())
 		{
-			spr_scope.setVisible(false);
+			//Make sure we don't unscope when shooting
+			if (m_shoot)
+			{
+				m_shoot = false;
+			}
+			
+			//Actual unscope check
+			else if (m_scope)
+			{
+				m_scope = false;
+			}
+			
+		
 		}
 		
 		return true;

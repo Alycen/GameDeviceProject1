@@ -2,7 +2,7 @@ package ie.itcarlow.snipersim;
 
 import ie.itcarlow.snipersim.scene.SceneManager;
 
-import org.andengine.engine.camera.SmoothCamera;
+import org.andengine.engine.camera.ZoomCamera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -28,7 +28,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	// ===========================================================
 
 	private float m_camSpeed = 4;
-	private SmoothCamera m_camera;
+	private ZoomCamera m_camera;
 	private boolean audio = true;
 	
 	
@@ -46,7 +46,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
-		final SmoothCamera m_camera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, m_camSpeed, m_camSpeed, 0);
+		m_camera = new ZoomCamera(0,0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), m_camera);
 		engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
