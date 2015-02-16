@@ -19,7 +19,6 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	public final ArrayList<Level> levelList  = new ArrayList<Level>();
-	
 	int curLevel = 0;
 	
 	Sprite spr_level;
@@ -27,11 +26,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	IEntity lBG;
 	IEntity lSprite;
+	IEntity lOverlay;
 	IEntity lScope;
+	IEntity lHUD;
 	
-	boolean m_scope;
-	boolean m_shoot;
-	boolean m_taken;
+	boolean m_showscope;
+	boolean m_ready;
+	float m_shotX, m_shotY;
+	int m_ammo = 3;
 	
 	private Music bgm;
 	
@@ -40,10 +42,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//Set up layers
 		lBG = new Entity();
 		lSprite = new Entity();
+		lOverlay = new Entity();
 		lScope = new Entity();
 		
 		attachChild(lBG);
 		attachChild(lSprite);
+		attachChild(lOverlay);
 		attachChild(lScope);
 		
 		//Set up levels
@@ -53,7 +57,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//set level
 		loadLevel(0);
 		
-		//set up scope
+		//set up rifle
 		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom){
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
@@ -66,7 +70,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		spr_scope.setVisible(false);
 	    this.registerTouchArea(spr_scope);
 		lScope.attachChild(spr_scope);
-
+		m_ready = true;
+		
 		//Audio handling
 		bgm = ResourceManager.getInstance().g_game_bgm;
 		
@@ -75,6 +80,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			bgm.play();
 		}
 		
+		//Scene touch
 		this.setOnSceneTouchListener(this);
 		
 	}
@@ -99,9 +105,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//set the current level to the new level
 		curLevel = index;
 		
+		
 		//Load background, set entities for new level
 		setLevelBG(levelList.get(index).m_texture);
 		levelList.get(index).loadCivs(lSprite);
+		//setLevelOverlay(levelList.get(index).m_overlay;
+		//m_ammo = levelList.get(index).m_ammo;
 	}
 	
 	private void setLevelBG(ITextureRegion levtex)
@@ -123,25 +132,64 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		else loadLevel(0);
 	}
+	
+	private void shoot(float x, float y)
+	{
+		if (m_ammo > 0)
+		{
+			ResourceManager.getInstance().g_shot.play();
+			m_ammo -= 1;
+			//m_ready = false;
+			//Send shoot message here
+			//activity.sendMessage(packMessage(websocket.type.SHOOT, websocket.Address.OTHER); 
+			
+			//Check if we hit something here
+			
+		}
+		
+		else ResourceManager.getInstance().g_empty.play();
+	}
 
 	@Override
 	public void onUpdate() {
 		levelList.get(curLevel).Update();
 		
-		if (m_scope)
+		//Scope and zoom
+		if (m_showscope)
 		{
 			spr_scope.setVisible(true);
 			camera.setZoomFactor(1.5f);
 		}
 		
-		if (!m_scope)
+		//Unscope and unzoom
+		if (!m_showscope)
 		{
-			spr_scope.setVisible(false);
 			camera.setCenter(camera.getWidth() / 2, camera.getHeight() / 2);
 			camera.setZoomFactor(1f);
+			spr_scope.setVisible(false);
 		}
 		
+		//If valid coordinates
+		if (m_ready && m_shotX >= 0 && m_shotY >= 0)
+		{
+			//Attempt to shoot
+			shoot(m_shotX, m_shotY);
+				
+			//Reset the shot
+			m_shotX = -2;
+			m_shotY = -2;
+		}
 		
+		else if (m_shotX == -2 && m_shotY == -2)
+		{
+			
+		}
+		
+		//Some sort of timer tick to reload
+		//if (!m_ready && curTime - lastShot > 2s)
+		//{
+		//	m_ready = true;
+		//}
 	}
 
 	@Override
@@ -150,34 +198,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		if(pSceneTouchEvent.isActionDown())
 		{
 			//If we're not zoomed, zoom in
-			if (!m_scope)
+			if (!m_showscope)
 			{
-				m_scope = true;
+				m_showscope = true;
 			}
 			
-			//Otherwise shoot (Second touch)
-			else
-			{
-				m_shoot = true;
-			}
 		}
 		
 		//Release scope
 		if(pSceneTouchEvent.isActionUp())
 		{
-			//Make sure we don't unscope when shooting
-			if (m_shoot)
+			//Unscope check
+			if (m_showscope)
 			{
-				m_shoot = false;
+				m_shotX = pSceneTouchEvent.getX();
+				m_shotY = pSceneTouchEvent.getY();
+				m_showscope = false;
 			}
-			
-			//Actual unscope check
-			else if (m_scope)
-			{
-				m_scope = false;
-			}
-			
-		
 		}
 		
 		return true;

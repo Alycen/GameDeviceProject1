@@ -15,6 +15,10 @@ public class Level {
 	public final ArrayList<Civilian> civArray = new ArrayList<Civilian>();
 	
 	public final ITextureRegion m_texture;
+	//public final ITextureRegion m_overlay;
+	//public final m_time;
+	//public final m_ammo;
+	
 	Random rand = new Random();
 	
 	//==========//Methods
@@ -28,6 +32,13 @@ public class Level {
 		for (int i = 0; i < civNum; i ++) {
 			civArray.add(new Civilian(rand.nextInt((250 + 30)+ 30), rand.nextInt((200 + 30)+ 30) ));
 		}
+	}
+	
+	public Level(ITextureRegion texture, ITextureRegion overlay, float time, int ammo) {
+		m_texture = texture;
+		//m_overlay = overlay;
+		//m_time = time;
+		//m_ammo = ammo;
 	}
 	
 	public void loadCivs(IEntity ent)
@@ -59,7 +70,6 @@ public class Level {
 			civArray.get(i).Update();
 		}
 	}
-		//Actual panning
 	
 	
 	

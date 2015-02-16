@@ -47,16 +47,27 @@ public class ResourceManager {
 	
 	//Levels
 	public ITextureRegion g_l_def_r;	
-	public ITextureRegion g_l_city_r;	
+	public ITextureRegion g_l_city_r;
 	public ITextureRegion g_l_tent_r;
+	
+	//Level Overlays
+	public ITextureRegion g_lo_curtains_r;
 	
 	//Scope
 	public ITextureRegion g_scope_r;
 	
+	//NPCs
 	public ITextureRegion g_civ_r;
+	public ITextureRegion g_cop_r;
+	public ITextureRegion g_target_r;
 	
+	//Music
 	public Music g_game_bgm;
 	
+	//SFX
+	public Sound g_shot;
+	public Sound g_cell;
+	public Sound g_empty;
 	
 	public static ResourceManager getInstance() {
 		return INSTANCE;
@@ -95,8 +106,7 @@ public class ResourceManager {
 		{
     		menu_atlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
     		menu_atlas.load();
-		} 
-    	
+		}
 		catch (final TextureAtlasBuilderException e)
 		{
 			Debug.e(e);
@@ -145,7 +155,9 @@ public class ResourceManager {
 		//Scope texture
 		g_scope_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/scope.png");
 		
-		g_civ_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "tempNPC.png");
+		//Civilians
+		g_civ_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/npc.png");
+		g_cop_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "tempPolice.png");
 		
 		//Load game texture atlas
     	try 
@@ -153,7 +165,6 @@ public class ResourceManager {
     		game_atlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
     		game_atlas.load();
 		} 
-    	
 		catch (final TextureAtlasBuilderException e)
 		{
 			Debug.e(e);
@@ -169,13 +180,25 @@ public class ResourceManager {
     	    e.printStackTrace();
     	}
     	
+    	//Load game sounds
+    	try
+    	{
+    		g_shot = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "shotloadbrass.ogg");
+    		g_cell = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "cell.ogg");
+    		g_empty = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "empty.ogg");
+    	}
+    	catch (IOException e)
+    	{
+    		e.printStackTrace();
+    	}
     	
 	}
 	
 	public void unloadGameResources(){
 		game_atlas.unload();
 		game_atlas = null;
-		
+		g_shot = null;
+		g_cell = null;
 	}
 	
 	public void loadFonts(){
