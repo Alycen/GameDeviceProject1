@@ -4,37 +4,55 @@ import ie.itcarlow.snipersim.Level;
 import ie.itcarlow.snipersim.ResourceManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.andengine.audio.music.Music;
-import org.andengine.engine.camera.ZoomCamera;
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+
 public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
+	//Levels
 	public final ArrayList<Level> levelList  = new ArrayList<Level>();
 	int curLevel = 0;
 	
+	//Sprites
 	Sprite spr_level;
 	Sprite spr_scope;
+	Sprite spr_reload;
+	Sprite spr_ammo;
 	
+	//Sprite layers
 	IEntity lBG;
 	IEntity lSprite;
 	IEntity lOverlay;
 	IEntity lScope;
-	IEntity lHUD;
 	
+	//HUD
+	HUD hud;
+	float m_maxReloadWidth = 688;
+	
+	//Times
+	long m_curTime;
+	long m_reloadTime;
+	
+	//Rifle
 	boolean m_showscope;
-	boolean m_ready;
+	boolean m_ready = false;
 	float m_shotX, m_shotY;
-	int m_ammo = 3;
+	int m_ammo;
+	long m_lastShot;
+	long m_maxReloadTime = 2500;
 	
+	//Sounds
 	private Music bgm;
 	
 	@Override
@@ -55,22 +73,40 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		levelList.add(new Level(ResourceManager.getInstance().g_l_city_r, 6));
 		
 		//set level
-		loadLevel(0);
+		loadLevel(1);
 		
 		//set up rifle
 		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom){
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 			{
-	              this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
-	              return false;
+				if (m_showscope)
+					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+	            return false;
 			}
 		};
-		
+		m_shotX = -1;
+		m_shotY = -2;
 		spr_scope.setVisible(false);
 	    this.registerTouchArea(spr_scope);
 		lScope.attachChild(spr_scope);
+		m_ammo = 10;
 		m_ready = true;
+		
+		//Set up HUD
+		hud = new HUD();
+		
+		spr_reload = new Sprite(16, 16, ResourceManager.getInstance().g_h_reload_r, vbom);
+		spr_reload.setWidth(m_maxReloadWidth);
+		spr_reload.setVisible(false);
+		
+		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
+		
+		hud.attachChild(spr_reload);
+		hud.attachChild(spr_ammo);
+		
+		updateAmmo();
+		camera.setHUD(hud);
 		
 		//Audio handling
 		bgm = ResourceManager.getInstance().g_game_bgm;
@@ -80,20 +116,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			bgm.play();
 		}
 		
-		//Scene touch
+		//Scene touch listener
 		this.setOnSceneTouchListener(this);
-		
 	}
 
 	@Override
 	public void onBackPressed() {
-		nextLevel();
-		//SceneManager.getInstance().setMenuScene();
+		//nextLevel();
+		SceneManager.getInstance().setMenuScene();
 	}
 
 	@Override
 	public void disposeScene() {
 		this.detachChildren();
+		hud.detachChildren();
+		hud = null;
 		bgm.stop();
 	}
 	
@@ -133,15 +170,24 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		else loadLevel(0);
 	}
 	
+	
 	private void shoot(float x, float y)
 	{
 		if (m_ammo > 0)
 		{
 			ResourceManager.getInstance().g_shot.play();
 			m_ammo -= 1;
-			//m_ready = false;
+			m_ready = false;
+			m_lastShot = System.currentTimeMillis();
+			
+			//Update ammo count
+			updateAmmo();
+			
+			spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
+			hud.attachChild(spr_ammo);
+			
 			//Send shoot message here
-			//activity.sendMessage(packMessage(websocket.type.SHOOT, websocket.Address.OTHER); 
+			//activity.sendMessage(packMessage(websocket.type.SHOOT, websocket.Address.OTHER, { m_shotX, m_shotY }); 
 			
 			//Check if we hit something here
 			
@@ -149,10 +195,48 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		else ResourceManager.getInstance().g_empty.play();
 	}
+	
+	private void reload()
+	{
+		//Show reload bar
+		spr_reload.setVisible(true);
+		
+		//Get time taken in the current reload
+		m_reloadTime = m_curTime - m_lastShot;
+		
+		//Update the reload bar
+		float fraction = (float)m_reloadTime / (float)m_maxReloadTime;
+		spr_reload.setPosition(16 + (m_maxReloadWidth * fraction), 16);
+		spr_reload.setWidth(m_maxReloadWidth - (m_maxReloadWidth * fraction));
+		
+		//If we're over the time to reload, we're done and ready up
+		if (m_reloadTime > m_maxReloadTime)
+		{
+			m_reloadTime = 0;
+			m_ready = true;
+			spr_reload.setVisible(false);
+		}
+	}
 
+	private void updateAmmo()
+	{
+		hud.detachChild(spr_ammo);
+		if (m_ammo > 0)
+		{
+			//Ternary to make sure we don't go over the maximum tile index
+			ResourceManager.getInstance().g_h_ammo_t.setCurrentTileIndex(m_ammo < 8 ? m_ammo : 7);
+		}
+		
+		//Otherwise if negative or zero
+		else ResourceManager.getInstance().g_h_ammo_t.setCurrentTileIndex(0);
+	}
 	@Override
 	public void onUpdate() {
+		//Update level
 		levelList.get(curLevel).Update();
+		
+		//Get time
+		m_curTime = System.currentTimeMillis();
 		
 		//Scope and zoom
 		if (m_showscope)
@@ -180,16 +264,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			m_shotY = -2;
 		}
 		
-		else if (m_shotX == -2 && m_shotY == -2)
+		//Reload timer
+		if (!m_ready)
 		{
-			
+			reload();
 		}
-		
-		//Some sort of timer tick to reload
-		//if (!m_ready && curTime - lastShot > 2s)
-		//{
-		//	m_ready = true;
-		//}
 	}
 
 	@Override
@@ -197,8 +276,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		if(pSceneTouchEvent.isActionDown())
 		{
-			//If we're not zoomed, zoom in
-			if (!m_showscope)
+			//If we're ready and not zoomed, zoom in
+			if (m_ready && !m_showscope)
 			{
 				m_showscope = true;
 			}
