@@ -25,7 +25,7 @@ public class ResourceManager {
 	private static final ResourceManager INSTANCE = new ResourceManager();
 	
 	public Engine engine;
-	public GameActivity activity;
+	public MainActivity activity;
 	public ZoomCamera camera;
 	public VertexBufferObjectManager vbom;
 
@@ -45,6 +45,7 @@ public class ResourceManager {
 	
 	//======Game
 	private BuildableBitmapTextureAtlas game_atlas;
+	private BuildableBitmapTextureAtlas game_npc_atlas;
 	
 	//Levels
 	public ITextureRegion g_l_def_r;	
@@ -52,7 +53,9 @@ public class ResourceManager {
 	public ITextureRegion g_l_tent_r;
 	
 	//Level Overlays
+	public ITextureRegion g_lo_def_r;
 	public ITextureRegion g_lo_curtains_r;
+	public ITextureRegion g_lo_blnk_r;
 	
 	//Scope
 	public ITextureRegion g_scope_r;
@@ -62,9 +65,13 @@ public class ResourceManager {
 	public TiledTextureRegion g_h_ammo_t;
 	
 	//NPCs
+	public TiledTextureRegion g_civ_a_t;
+	public TiledTextureRegion g_civ_b_t;
+	public TiledTextureRegion g_civ_c_t;
+	public TiledTextureRegion g_civ_d_t;
+	public TiledTextureRegion g_cop_t;
 	public ITextureRegion g_civ_r;
 	public ITextureRegion g_cop_r;
-	public ITextureRegion g_target_r;
 	
 	//Music
 	public Music g_game_bgm;
@@ -78,7 +85,7 @@ public class ResourceManager {
 		return INSTANCE;
 	}
 	
-	public static void prepareManager(Engine engine, GameActivity activity, ZoomCamera camera, VertexBufferObjectManager vbom)
+	public static void prepareManager(Engine engine, MainActivity activity, ZoomCamera camera, VertexBufferObjectManager vbom)
 	{
 		getInstance().engine = engine;
 		getInstance().activity = activity;
@@ -104,7 +111,7 @@ public class ResourceManager {
 		m_audio_off_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonAudioOff.png");
 		
 		//Menu background
-		m_bg_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/bg.png");
+		m_bg_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/bg2.png");
 		
 		//Load menu texture atlas
     	try 
@@ -147,12 +154,18 @@ public class ResourceManager {
 	public void loadGameResources(){
 		//Set up atlas
 		game_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
+		game_npc_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
 		
 		//Default level
-		g_l_def_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/deflevel.png");
+		//g_l_def_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/deflevel.png");
+		//g_lo_def_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/defoverlay.png");
+		
+		//Blank overlay
+		g_lo_blnk_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/blankoverlay.png");
 		
 		//City level
 		g_l_city_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/city.jpg");
+		g_lo_curtains_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/curtains.png");
 		
 		//Tent level
 		g_l_tent_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/level/tent.jpg");
@@ -161,8 +174,14 @@ public class ResourceManager {
 		g_scope_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/rifle/scope.png");
 		
 		//NPCs
-		g_civ_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/npc.png");
-		g_cop_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/police.png");
+		g_civ_a_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_npc_atlas, activity, "game/npc/a.png", 4, 3);
+		g_civ_b_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_npc_atlas, activity, "game/npc/b.png", 4, 3);
+		g_civ_c_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_npc_atlas, activity, "game/npc/c.png", 4, 3);
+		g_civ_d_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_npc_atlas, activity, "game/npc/d.png", 4, 3);
+		g_cop_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_npc_atlas, activity, "game/police/police.png", 3, 3);
+		
+		g_civ_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_npc_atlas, activity, "game/npc.png");
+		g_cop_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_npc_atlas, activity, "game/police.png");
 		
 		//HUD
 		g_h_ammo_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_atlas, activity, "game/hud/ammo.png", 1, 8);
@@ -173,6 +192,8 @@ public class ResourceManager {
 		{
     		game_atlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
     		game_atlas.load();
+    		game_npc_atlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+    		game_npc_atlas.load();
 		} 
 		catch (final TextureAtlasBuilderException e)
 		{
@@ -206,6 +227,9 @@ public class ResourceManager {
 	public void unloadGameResources(){
 		game_atlas.unload();
 		game_atlas = null;
+		game_npc_atlas.unload();
+		game_npc_atlas = null;
+		
 		g_shot = null;
 		g_cell = null;
 		g_empty = null;

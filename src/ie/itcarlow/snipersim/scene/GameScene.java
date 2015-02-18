@@ -22,23 +22,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	//Levels
 	public final ArrayList<Level> levelList  = new ArrayList<Level>();
-	int curLevel = 0;
+	int curLevel = 1;
 	
-	//Sprites
-	Sprite spr_level;
-	Sprite spr_scope;
-	Sprite spr_reload;
-	Sprite spr_ammo;
-	
-	//Sprite layers
+	//Sprites & layers
 	IEntity lBG;
+	Sprite spr_level;
 	IEntity lSprite;
-	IEntity lOverlay;
+	IEntity lOL;
+	Sprite spr_overlay;
 	IEntity lScope;
+	Sprite spr_scope;
 	
 	//HUD
 	HUD hud;
-	float m_maxReloadWidth = 688;
+	Sprite spr_reload;
+	Sprite spr_ammo;
+	float m_maxReloadHeight = 320;
 	
 	//Times
 	long m_curTime;
@@ -50,7 +49,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	float m_shotX, m_shotY;
 	int m_ammo;
 	long m_lastShot;
-	long m_maxReloadTime = 2500;
+	long m_maxReloadTime = 2000;
 	
 	//Sounds
 	private Music bgm;
@@ -60,20 +59,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//Set up layers
 		lBG = new Entity();
 		lSprite = new Entity();
-		lOverlay = new Entity();
+		lOL = new Entity();
 		lScope = new Entity();
 		
 		attachChild(lBG);
 		attachChild(lSprite);
-		attachChild(lOverlay);
+		attachChild(lOL);
 		attachChild(lScope);
 		
 		//Set up levels
-		levelList.add(new Level(ResourceManager.getInstance().g_l_tent_r, 1));
-		levelList.add(new Level(ResourceManager.getInstance().g_l_city_r, 6));
-		
-		//set level
-		loadLevel(1);
+		//levelList.add(new Level(ResourceManager.getInstance().g_l_tent_r, 1));
+		//levelList.add(new Level(ResourceManager.getInstance().g_l_city_r, 6));
+		levelList.add(new Level(1, lSprite));
+		levelList.add(new Level(2, lSprite));
 		
 		//set up rifle
 		spr_scope = new Sprite(0, 0, ResourceManager.getInstance().g_scope_r, vbom){
@@ -86,18 +84,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			}
 		};
 		m_shotX = -1;
-		m_shotY = -2;
+		m_shotY = -1;
 		spr_scope.setVisible(false);
 	    this.registerTouchArea(spr_scope);
 		lScope.attachChild(spr_scope);
-		m_ammo = 10;
 		m_ready = true;
 		
 		//Set up HUD
 		hud = new HUD();
 		
-		spr_reload = new Sprite(16, 16, ResourceManager.getInstance().g_h_reload_r, vbom);
-		spr_reload.setWidth(m_maxReloadWidth);
+		spr_reload = new Sprite(710, 74, ResourceManager.getInstance().g_h_reload_r, vbom);
+		spr_reload.setHeight(m_maxReloadHeight);
 		spr_reload.setVisible(false);
 		
 		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
@@ -117,13 +114,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		}
 		
 		//Scene touch listener
-		this.setOnSceneTouchListener(this);
+		this.setOnSceneTouchListener(this);	
+
+		//Load level
+		loadLevel(curLevel);
+		
 	}
 
 	@Override
 	public void onBackPressed() {
-		//nextLevel();
-		SceneManager.getInstance().setMenuScene();
+		nextLevel();
+		//SceneManager.getInstance().setMenuScene();
 	}
 
 	@Override
@@ -137,17 +138,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	private void loadLevel(int index)
 	{
 		//Unload current level entities
-		levelList.get(curLevel).unloadCivs(lSprite);
+		levelList.get(curLevel).unloadCivs();
 		
 		//set the current level to the new level
 		curLevel = index;
 		
 		
 		//Load background, set entities for new level
-		setLevelBG(levelList.get(index).m_texture);
-		levelList.get(index).loadCivs(lSprite);
-		//setLevelOverlay(levelList.get(index).m_overlay;
-		//m_ammo = levelList.get(index).m_ammo;
+		setLevelBG(levelList.get(index).m_background);
+		levelList.get(index).loadCivs();
+		setLevelOL(levelList.get(index).m_overlay);
+		m_ammo = levelList.get(index).m_ammo;
+		updateAmmo();
 	}
 	
 	private void setLevelBG(ITextureRegion levtex)
@@ -158,6 +160,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		lBG.attachChild(spr_level);
 	}
+	
+
+	private void setLevelOL(ITextureRegion overtex)
+	{
+		lOL.detachChild(spr_overlay);
+		
+		spr_overlay = new Sprite(0, 0, overtex, vbom);
+		
+		lOL.attachChild(spr_overlay);
+	}
+	
 	
 	private void nextLevel() {
 		int maxLevel = levelList.size();
@@ -183,9 +196,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			//Update ammo count
 			updateAmmo();
 			
-			spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
-			hud.attachChild(spr_ammo);
-			
 			//Send shoot message here
 			//activity.sendMessage(packMessage(websocket.type.SHOOT, websocket.Address.OTHER, { m_shotX, m_shotY }); 
 			
@@ -205,9 +215,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		m_reloadTime = m_curTime - m_lastShot;
 		
 		//Update the reload bar
-		float fraction = (float)m_reloadTime / (float)m_maxReloadTime;
-		spr_reload.setPosition(16 + (m_maxReloadWidth * fraction), 16);
-		spr_reload.setWidth(m_maxReloadWidth - (m_maxReloadWidth * fraction));
+		float fraction = (float)m_reloadTime / (float)m_maxReloadTime; 
+		spr_reload.setHeight(m_maxReloadHeight - (m_maxReloadHeight * fraction));
 		
 		//If we're over the time to reload, we're done and ready up
 		if (m_reloadTime > m_maxReloadTime)
@@ -221,6 +230,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	private void updateAmmo()
 	{
 		hud.detachChild(spr_ammo);
+		
 		if (m_ammo > 0)
 		{
 			//Ternary to make sure we don't go over the maximum tile index
@@ -229,7 +239,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		//Otherwise if negative or zero
 		else ResourceManager.getInstance().g_h_ammo_t.setCurrentTileIndex(0);
+
+		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
+		
+		hud.attachChild(spr_ammo);
 	}
+	
+	
 	@Override
 	public void onUpdate() {
 		//Update level
@@ -260,8 +276,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			shoot(m_shotX, m_shotY);
 				
 			//Reset the shot
-			m_shotX = -2;
-			m_shotY = -2;
+			m_shotX = -1;
+			m_shotY = -1;
 		}
 		
 		//Reload timer

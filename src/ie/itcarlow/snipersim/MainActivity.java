@@ -15,7 +15,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandler {
+public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandler {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -26,10 +26,8 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
-	private float m_camSpeed = 4;
 	private ZoomCamera m_camera;
-	private boolean audio = true;
+	private boolean audio = false;
 	
 	
 	// ===========================================================
@@ -90,6 +88,16 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     		{
     			SceneManager.getInstance().getCurrentScene().onBackPressed();
     		}
+    	
+    	if (keyCode == KeyEvent.KEYCODE_HOME)
+    		{
+    			System.exit(0);
+    		}
+    	
+    	if (keyCode == KeyEvent.KEYCODE_APP_SWITCH)
+    		{
+    			toggleAudio();
+    		}
     	return false;
     }
     
@@ -101,14 +109,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IUpdateHandl
     public void toggleAudio()
     {
     	audio = !audio;
-    }
-    
-    public void buttonPress()
-    {
-    	if (audio)
-    	{
-    		ResourceManager.getInstance().m_click.play();
-    	}
     }
     
 	// ===========================================================

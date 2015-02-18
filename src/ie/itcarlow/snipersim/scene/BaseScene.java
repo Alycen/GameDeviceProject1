@@ -1,6 +1,6 @@
 package ie.itcarlow.snipersim.scene;
 
-import ie.itcarlow.snipersim.GameActivity;
+import ie.itcarlow.snipersim.MainActivity;
 import ie.itcarlow.snipersim.ResourceManager;
 
 import org.andengine.engine.Engine;
@@ -12,7 +12,7 @@ public abstract class BaseScene extends Scene {
 
 protected Engine engine;
 protected VertexBufferObjectManager vbom;
-protected GameActivity activity;
+protected MainActivity activity;
 protected ZoomCamera camera;
 
 public BaseScene() {

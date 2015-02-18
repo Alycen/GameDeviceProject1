@@ -32,7 +32,7 @@ public class MainMenuScene extends BaseScene{
 								
 				if(pSceneTouchEvent.isActionUp())
 				{
-					ResourceManager.getInstance().activity.buttonPress();
+		    		ResourceManager.getInstance().m_click.play();
 					SceneManager.getInstance().setGameScene();
 				}
 				
@@ -48,7 +48,7 @@ public class MainMenuScene extends BaseScene{
 			{			
 				if(pSceneTouchEvent.isActionUp())
 				{
-					ResourceManager.getInstance().activity.buttonPress();
+		    		ResourceManager.getInstance().m_click.play();
 					System.exit(0);
 				}
 				
@@ -64,12 +64,14 @@ public class MainMenuScene extends BaseScene{
 			{			
 				if(pSceneTouchEvent.isActionUp())
 				{
-					activity.buttonPress();
+		    		ResourceManager.getInstance().m_click.play();
 					activity.toggleAudio();
 					
 					//If music is playing stop it
 					if (!activity.getAudio() && bgm.isPlaying())
-						bgm.pause();
+					{
+						bgm.pause();						
+					}
 					
 					//If we turned audio on and it's not, play
 					if (activity.getAudio())
