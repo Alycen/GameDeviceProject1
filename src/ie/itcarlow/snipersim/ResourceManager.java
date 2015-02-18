@@ -35,8 +35,11 @@ public class ResourceManager {
 	//Buttons
 	public ITextureRegion m_play_r;
 	public ITextureRegion m_exit_r;
-	public ITextureRegion m_audio_r;
-	public ITextureRegion m_audio_off_r;
+	public TiledTextureRegion m_audio_t;
+	public TiledTextureRegion m_multi_t;
+
+	public ITextureRegion m_btn_r;
+	public ITextureRegion m_btnsm_r;
 	
 	public ITextureRegion m_bg_r;
 	
@@ -100,6 +103,10 @@ public class ResourceManager {
 	public void loadMenuResources(){
 		menu_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 		
+		//Default buttons
+		m_btn_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonBase.png");
+		m_btnsm_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonBaseSmall.png");
+		
 		//Play button
 		m_play_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonPlay.png");
 		
@@ -107,8 +114,8 @@ public class ResourceManager {
 		m_exit_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonExit.png");
 		
 		//Audio button
-		m_audio_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonAudio.png");
-		m_audio_off_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/buttonAudioOff.png");
+		m_audio_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(menu_atlas, activity, "menu/buttonAudio.png", 1, 2);
+		m_multi_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(menu_atlas, activity, "menu/buttonMulti.png", 1, 2);
 		
 		//Menu background
 		m_bg_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menu_atlas, activity, "menu/bg2.png");

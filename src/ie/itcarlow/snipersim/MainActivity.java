@@ -28,6 +28,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	// ===========================================================
 	private ZoomCamera m_camera;
 	private boolean audio = false;
+	private boolean multi = false;
 	
 	
 	// ===========================================================
@@ -110,6 +111,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
     {
     	audio = !audio;
     }
+    
+    public boolean getMP()
+    {
+    	return multi;
+    }
+    
+    public void toggleMP()
+    {
+    	multi = !multi;
+    }
+    
     
 	// ===========================================================
 	// Methods

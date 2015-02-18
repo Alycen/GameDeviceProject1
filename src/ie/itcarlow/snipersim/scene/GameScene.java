@@ -143,11 +143,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//set the current level to the new level
 		curLevel = index;
 		
-		
 		//Load background, set entities for new level
 		setLevelBG(levelList.get(index).m_background);
-		levelList.get(index).loadCivs();
 		setLevelOL(levelList.get(index).m_overlay);
+		
+		levelList.get(index).loadCivs();
+		
 		m_ammo = levelList.get(index).m_ammo;
 		updateAmmo();
 	}
