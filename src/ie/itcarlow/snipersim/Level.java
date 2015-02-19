@@ -18,11 +18,11 @@ public class Level {
 	public ITextureRegion m_overlay;
 	
 	//Times
-	long m_startTime;
-	long m_curTime;
-	long m_totalTime;
+	public long m_startTime;
+	public long m_totalTime;
 	long m_copTime;
 	long m_spawnTime;
+	boolean alert;
 	
 	//Civilians
 	int m_maxCivs;
@@ -46,6 +46,9 @@ public class Level {
 	
 	//Random (Seed)
 	Random rand = new Random(System.currentTimeMillis());
+	
+	//Complete
+	public boolean m_complete = false;
 	
 	//==========//Methods
 	
@@ -93,6 +96,7 @@ public class Level {
 		m_maxCivs = 5;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
+		m_target.m_target = true;
 		m_civArray.add(m_target);
 		
 		//Police
@@ -121,6 +125,7 @@ public class Level {
 		m_maxCivs = 15;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
+		m_target.m_target = true;
 		m_civArray.add(m_target);
 				
 		//Police
@@ -150,6 +155,7 @@ public class Level {
 		m_maxCivs = 30;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
+		m_target.m_target = true;
 		m_civArray.add(m_target);
 				
 		//Police
@@ -215,12 +221,17 @@ public class Level {
 		}
 	}
 	
+	public void start(long time)
+	{
+		m_startTime = time;
+	}
+	
 	public Civilian randomCiv()
 	{
 		boolean left = rand.nextBoolean();
 		float distX = rand.nextInt(65);
 		float distY = rand.nextInt(40);
-		float spd = rand.nextInt(5);
+		float spd = rand.nextInt(2);
 		
 		int top = rand.nextInt(4);
 		int middle = rand.nextInt(4);
@@ -246,10 +257,6 @@ public class Level {
 		return civ;
 	}
 	
-	//=====//Movement
-	
-	//=====//Update and Draw
-	
 	public void checkShot(float x, float y)
 	{
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
@@ -257,20 +264,20 @@ public class Level {
 		}
 	}
 	
-	//Update
-	public void Update() {
+	public void Update(long time) {
 		
-		//update time
-		m_curTime = System.currentTimeMillis();
-		
+		//Update civilians
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
-			//Civilian civ = m_civArray.get(i);
 			
 			//Only update if we're active
 			if (m_civArray.get(i).m_active)
 			{
-				m_civArray.get(i).Update(m_curTime);
+				m_civArray.get(i).Update(time);
 			}
+			
+			//Otherwise the target is dead
+			else if (m_civArray.get(i).m_target)
+				m_complete = true;
 			
 			else
 			{
@@ -279,7 +286,5 @@ public class Level {
 			
 		}
 	}
-	
-	
-	
+
 }

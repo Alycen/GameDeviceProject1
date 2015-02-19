@@ -25,6 +25,7 @@ public class Civilian {
 	
 	//States
 	public boolean m_active, m_alive;
+	public boolean m_target;
 	
 	//Direction
 	private int UP = 1,DOWN = 2, LEFT = 3, RIGHT = 4, STOP =5;
@@ -37,7 +38,7 @@ public class Civilian {
 	//Times
 	private long m_spawnTime;
 	private long m_tod;
-	private long m_moveTimer = 10000;
+	private long m_moveTimer = 5000;
 	private long m_despawnTime = 5000;
 	
 	Random rand = new Random(System.currentTimeMillis());
@@ -164,12 +165,13 @@ public class Civilian {
 		float w = 800, h = 480;		
 		
 		float x = m_sprite.getX();
-		float y = m_sprite.getY();
+		float y = m_sprite.getY();	
 		
 		//Off left edge
-		if (x < 0)
+		if (x + 24 < 0)
 			m_velocity.x = rand.nextInt(4);
 		
+		//Right edge
 		if (x > w)
 			m_velocity.x = rand.nextInt(4) * -1;	
 		

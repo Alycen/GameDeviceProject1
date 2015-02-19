@@ -37,6 +37,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	HUD hud;
 	Sprite spr_reload;
 	Sprite spr_ammo;
+	Sprite spr_timer;
+	float m_maxTimerWidth = 694;
 	float m_maxReloadHeight = 320;
 	
 	//Times
@@ -96,9 +98,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		spr_reload.setVisible(false);
 		
 		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
+		spr_timer = new Sprite(16, 16, ResourceManager.getInstance().g_h_timer_r, vbom);
 		
 		hud.attachChild(spr_reload);
 		hud.attachChild(spr_ammo);
+		hud.attachChild(spr_timer);
 		
 		updateAmmo();
 		camera.setHUD(hud);
@@ -142,13 +146,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		curLevel = index;
 		
 		//Load background, set entities for new level
-		setLevelBG(levelList.get(index).m_background);
-		setLevelOL(levelList.get(index).m_overlay);
+		setLevelBG(levelList.get(curLevel).m_background);
+		setLevelOL(levelList.get(curLevel).m_overlay);
 		
-		levelList.get(index).loadCivs();
+		levelList.get(curLevel).loadCivs();
 		
-		m_ammo = levelList.get(index).m_ammo;
+		m_ammo = levelList.get(curLevel).m_ammo;
 		updateAmmo();
+		levelList.get(curLevel).start(System.currentTimeMillis());
 	}
 	
 	private void setLevelBG(ITextureRegion levtex)
@@ -249,7 +254,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	@Override
 	public void onUpdate() {
 		//Update level
-		levelList.get(curLevel).Update();
+		levelList.get(curLevel).Update(m_curTime);
+
+		long timeTaken = m_curTime - levelList.get(curLevel).m_startTime;
+		
+		float fraction = (float)timeTaken / (float)levelList.get(curLevel).m_totalTime; 
+		
+		if (levelList.get(curLevel).m_alert)
+		{
+			fraction = (float)timeTaken / (float)levelList.get(curLevel).m_copTime;
+		}
+		
+		spr_timer.setWidth(m_maxTimerWidth - (m_maxTimerWidth * fraction));
+		
+		//Next level
+		if (levelList.get(curLevel).m_complete)
+			nextLevel();
 		
 		//Get time
 		m_curTime = System.currentTimeMillis();

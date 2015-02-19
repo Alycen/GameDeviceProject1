@@ -66,6 +66,8 @@ public class ResourceManager {
 	//HUD
 	public ITextureRegion g_h_reload_r;
 	public TiledTextureRegion g_h_ammo_t;
+	public ITextureRegion g_h_timer_r;
+	public ITextureRegion g_h_timercop_r;
 	
 	//NPCs
 	public TiledTextureRegion g_civ_a_t;
@@ -193,6 +195,9 @@ public class ResourceManager {
 		//HUD
 		g_h_ammo_t = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(game_atlas, activity, "game/hud/ammo.png", 1, 8);
 		g_h_reload_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/hud/reload.png");
+		g_h_timer_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/hud/timer.png");
+		g_h_timercop_r = BitmapTextureAtlasTextureRegionFactory.createFromAsset(game_atlas, activity, "game/hud/timer2.png");
+		
 		
 		//Load game texture atlas
     	try 
