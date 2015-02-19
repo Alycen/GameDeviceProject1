@@ -8,6 +8,8 @@ import java.util.Random;
 import org.andengine.entity.IEntity;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+
 public class Level {
 	//==========//Variables
 	
@@ -20,6 +22,7 @@ public class Level {
 	long m_curTime;
 	long m_totalTime;
 	long m_copTime;
+	long m_spawnTime;
 	
 	//Civilians
 	int m_maxCivs;
@@ -33,6 +36,7 @@ public class Level {
 	
 	//Bounds
 	int m_top;
+	int m_bottom;
 	
 	//Player
 	public int m_ammo;
@@ -46,14 +50,7 @@ public class Level {
 	//==========//Methods
 	
 	//=====//Make & Load
-	
 	//Constructor
-	public Level(ITextureRegion texture, int civNum) {
-		m_background = texture;
-		
-
-	}
-	
 	public Level(int level, IEntity gScene)
 	{
 		//These values are level-independent
@@ -67,30 +64,26 @@ public class Level {
 		{
 		case 1:
 			Level1();
-			return;
+			break;
 		case 2:
 			Level2();
-			return;
+			break;
 		default:
 			LevelDef();
+			break;
 		}
 		
-		//Spawn civilians
-		for (int i = 0; i < m_maxCivs; i ++) {
-			m_civArray.add(new Civilian(rand.nextInt((250 + 30)+ 30), rand.nextInt((200 + 30)+ 30) ));
-		}
-		
-		//Spawn cops
-		
-		//Have methods to attempt each above and check if the numbers are within max
+		//Populate civilians & cops
+		createCivs();
+		createCops();
 	}
 	
 	//Default level variables
 	private void LevelDef()
 	{
 		//Default values, can be overridden by level methods
-		m_background = ResourceManager.getInstance().g_l_def_r;
-		m_overlay = ResourceManager.getInstance().g_lo_def_r;
+		m_background = ResourceManager.getInstance().g_l_tent_r;
+		m_overlay = ResourceManager.getInstance().g_lo_blnk_r;
 		
 		//Times
 		m_totalTime = 30000;
@@ -98,13 +91,16 @@ public class Level {
 				
 		//Civilians
 		m_maxCivs = 5;
-		m_target = new Civilian(); //spawnCivilian(); //Write random civ constructor that can check it's not target
-				
+		m_spawnTime = 1000;
+		m_target = randomCiv();
+		m_civArray.add(m_target);
+		
 		//Police
 		m_maxCops = 1;
 				
 		//Bounds
-		m_top = 40;
+		m_top = 400;
+		m_bottom = 460;
 				 
 		//Player
 		m_ammo = 3;
@@ -123,13 +119,16 @@ public class Level {
 				
 		//Civilians
 		m_maxCivs = 15;
-		m_target = new Civilian(); //spawnCivilian(); //Write random civ constructor that can check it's not target
+		m_spawnTime = 1000;
+		m_target = randomCiv();
+		m_civArray.add(m_target);
 				
 		//Police
 		m_maxCops = 0;
 				
 		//Bounds
-		m_top = 60;
+		m_top = 400;
+		m_bottom = 460;
 				 
 		//Player
 		m_ammo = 5;
@@ -149,42 +148,114 @@ public class Level {
 				
 		//Civilians
 		m_maxCivs = 30;
-		m_target = new Civilian(); //spawnCivilian(); //Write random civ constructor that can check it's not target
+		m_spawnTime = 1000;
+		m_target = randomCiv();
+		m_civArray.add(m_target);
 				
 		//Police
 		m_maxCops = 5;
 				
 		//Bounds
-		m_top = 40;
-				 
+		m_top = 400;
+		m_bottom = 460;
+		
 		//Player
 		m_ammo = 3;
 	}
 	
 	//====// Civilians
+	public void createCivs()
+	{		
+		//Civilian civ = randomCiv();
+		
+		//Half the civilians start on the level
+		for (int i = 0, max = (m_maxCivs / 2) - 1 ; i < max ; i++) {
+
+			//If we're the same as target, re-roll
+			//while (m_target.compare(civ))
+			//{
+			//	civ = randomCiv();
+			//}
+			
+			m_civArray.add(randomCiv());
+		}
+	}
+	
+	public void createCops()
+	{
+		
+	}
+	
 	public void loadCivs()
 	{
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
-			m_gScene.attachChild(m_civArray.get(i).getCivSprite());
+			m_civArray.get(i).reset();
+			m_gScene.attachChild(m_civArray.get(i).sprite());
+		}
+	}
+	
+	public void loadCops()
+	{
+		for (int i = 0, max = m_copArray.size(); i < max; i ++) {
+			m_gScene.attachChild(m_copArray.get(i).sprite());
 		}
 	}
 	
 	public void unloadCivs()
 	{
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
-			m_gScene.detachChild(m_civArray.get(i).getCivSprite());
+			m_gScene.detachChild(m_civArray.get(i).sprite());
 		}
 	}
 	
-	public void randomCiv()
+	public void unloadCops()
 	{
-		//roll for random numbers
-		//if they're the same as target, re-roll
+		for (int i = 0, max = m_copArray.size(); i < max; i ++) {
+			m_gScene.detachChild(m_copArray.get(i).sprite());
+		}
+	}
+	
+	public Civilian randomCiv()
+	{
+		boolean left = rand.nextBoolean();
+		float distX = rand.nextInt(65);
+		float distY = rand.nextInt(40);
+		float spd = rand.nextInt(5);
+		
+		int top = rand.nextInt(4);
+		int middle = rand.nextInt(4);
+		int bottom = rand.nextInt(3);
+		
+		if (left)
+		{
+			//Off the left edge is -
+			distX *= -1;
+		}
+		
+		else
+		{
+			//Moving left is -
+			spd *= -1;
+			//Off the far edge
+			distX += 800;
+		}
+		
+		Civilian civ = new Civilian(distX, 420 - distY, top, middle, bottom);
+		civ.setVel(spd, 0);
+		
+		return civ;
 	}
 	
 	//=====//Movement
 	
 	//=====//Update and Draw
+	
+	public void checkShot(float x, float y)
+	{
+		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
+			 m_civArray.get(i).checkShot(x, y);
+		}
+	}
 	
 	//Update
 	public void Update() {
@@ -193,7 +264,19 @@ public class Level {
 		m_curTime = System.currentTimeMillis();
 		
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
-			m_civArray.get(i).Update();
+			//Civilian civ = m_civArray.get(i);
+			
+			//Only update if we're active
+			if (m_civArray.get(i).m_active)
+			{
+				m_civArray.get(i).Update(m_curTime);
+			}
+			
+			else
+			{
+				m_gScene.detachChild(m_civArray.get(i).sprite());
+			}
+			
 		}
 	}
 	

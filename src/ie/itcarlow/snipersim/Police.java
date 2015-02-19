@@ -32,5 +32,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class Police extends Civilian {
+
+	public Police(float x, float y, int top, int middle, int bottom) {
+		super(x, y, top, middle, bottom);
+		// TODO Auto-generated constructor stub
+	}
 	
 }

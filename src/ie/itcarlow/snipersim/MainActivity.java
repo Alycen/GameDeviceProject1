@@ -71,8 +71,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
   	public Scene onCreateScene() 
     {
     	SceneManager.getInstance().setMenuScene();
-    	//Gonna have to do this in gameScene
-		//	mScene.attachChild(civTest.getCivSprite());
     	mEngine.registerUpdateHandler(this);
     	return SceneManager.getInstance().getCurrentScene();
   	}
@@ -138,21 +136,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	}
 	
 	public void create() {
-		//setBackground(new Background(Color.CYAN));
-		//BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		//play_button_atlas = new BitmapTextureAtlas(getTextureManager(), 512, 512);
-		
-		//play_button_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(play_button_atlas, this, "buttonPlay.png", 0, 0);
-		//play_button_atlas.load();
-		
-		//play = new Sprite(400, 240, play_button_region, this.getVertexBufferObjectManager());
-		//ResourceManager.getInstance().loadMenuResources();
-		//play = new Sprite (400, 240, ResourceManager.getInstance().play_button_region, ResourceManager.getInstance().vbom);
-		//this.mScene.attachChild(play);
-		//SceneManager.getInstance().getCurrentScene().attachChild(play);
-		//attachChild(play);
-		//createMenu();
 	}
+	
     // ===========================================================
  	// Inner and Anonymous Classes
  	// ===========================================================

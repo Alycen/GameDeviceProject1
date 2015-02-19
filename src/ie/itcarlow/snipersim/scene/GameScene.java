@@ -22,7 +22,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	//Levels
 	public final ArrayList<Level> levelList  = new ArrayList<Level>();
-	int curLevel = 1;
+	int curLevel = 0;
 	
 	//Sprites & layers
 	IEntity lBG;
@@ -68,8 +68,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		attachChild(lScope);
 		
 		//Set up levels
-		//levelList.add(new Level(ResourceManager.getInstance().g_l_tent_r, 1));
-		//levelList.add(new Level(ResourceManager.getInstance().g_l_city_r, 6));
 		levelList.add(new Level(1, lSprite));
 		levelList.add(new Level(2, lSprite));
 		
@@ -172,7 +170,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		lOL.attachChild(spr_overlay);
 	}
 	
-	
 	private void nextLevel() {
 		int maxLevel = levelList.size();
 		
@@ -201,6 +198,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			//activity.sendMessage(packMessage(websocket.type.SHOOT, websocket.Address.OTHER, { m_shotX, m_shotY }); 
 			
 			//Check if we hit something here
+			
+			levelList.get(curLevel).checkShot(x, y);
 			
 		}
 		
@@ -260,6 +259,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		{
 			spr_scope.setVisible(true);
 			camera.setZoomFactor(1.5f);
+			camera.setCenter(camera.getWidth() / 2, camera.getHeight());
 		}
 		
 		//Unscope and unzoom
