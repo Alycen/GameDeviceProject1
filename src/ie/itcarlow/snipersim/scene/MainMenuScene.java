@@ -42,7 +42,12 @@ public class MainMenuScene extends BaseScene{
 				if(pSceneTouchEvent.isActionUp())
 				{
 		    		ResourceManager.getInstance().m_click.play();
-					SceneManager.getInstance().setGameScene();
+		    		if (!activity.getMP())
+		    			SceneManager.getInstance().setGameScene();
+		    		else
+		    		{
+		    			//send server message to join, toast response
+		    		}
 				}
 				
 				return true;
@@ -187,6 +192,6 @@ public class MainMenuScene extends BaseScene{
 
 	@Override
 	public void onUpdate() {
-				
+			//check for server messages and toast responses, go to gamescene if you can	
 	}	
 }

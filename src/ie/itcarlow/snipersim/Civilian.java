@@ -25,7 +25,6 @@ public class Civilian {
 	
 	//States
 	public boolean m_active, m_alive;
-	public boolean m_target;
 	
 	//Direction
 	private int UP = 1,DOWN = 2, LEFT = 3, RIGHT = 4, STOP =5;

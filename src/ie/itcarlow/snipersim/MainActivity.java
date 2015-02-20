@@ -1,5 +1,6 @@
 package ie.itcarlow.snipersim;
 
+import ie.itcarlow.snipersim.SharedPreferencesManager;
 import ie.itcarlow.snipersim.scene.SceneManager;
 
 import org.andengine.engine.camera.ZoomCamera;
@@ -27,7 +28,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
 	// Fields
 	// ===========================================================
 	private ZoomCamera m_camera;
-	private boolean audio = false;
+	private boolean audio;
 	private boolean multi = false;
 	
 	
@@ -56,6 +57,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
 		{
 			Toast.makeText(this,  "MultiTouch unsupported", Toast.LENGTH_LONG).show();			
 		}
+		
+		SharedPreferencesManager.getInstance(this);
+		audio = SharedPreferencesManager.getInstance(this).getMusic();
 		
 		return engineOptions;
 	}
@@ -108,6 +112,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IUpdateHandl
     public void toggleAudio()
     {
     	audio = !audio;
+    	SharedPreferencesManager.getInstance(this).saveMusic(audio);
     }
     
     public boolean getMP()

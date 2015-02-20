@@ -15,6 +15,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.util.Log;
 
@@ -35,23 +36,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	
 	//HUD
 	HUD hud;
-	Sprite spr_reload;
-	Sprite spr_ammo;
-	Sprite spr_timer;
+	Sprite spr_reload, spr_ammo, spr_timer, spr_targ, spr_mask;
+	float m_maxMaskHeight = 64;
 	float m_maxTimerWidth = 694;
 	float m_maxReloadHeight = 320;
 	
 	//Times
-	long m_curTime;
-	long m_reloadTime;
+	long m_curTime, m_reloadTime;
 	
 	//Rifle
-	boolean m_showscope;
-	boolean m_ready = false;
+	boolean m_showscope, m_ready = false;
 	float m_shotX, m_shotY;
 	int m_ammo;
 	long m_lastShot;
 	long m_maxReloadTime = 2000;
+	float aimAdjust = -40;
+	float zoom = 1.5f;
 	
 	//Sounds
 	private Music bgm;
@@ -79,7 +79,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 			{
 				if (m_showscope)
-					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+				{
+					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, (pSceneTouchEvent.getY() - this.getHeight() / 2) + aimAdjust);
+				}
 	            return false;
 			}
 		};
@@ -99,10 +101,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
 		spr_timer = new Sprite(16, 16, ResourceManager.getInstance().g_h_timer_r, vbom);
+		spr_targ = new Sprite(16, 72, genCiv(levelList.get(curLevel).m_target.m_top, levelList.get(curLevel).m_target.m_middle, levelList.get(curLevel).m_target.m_bottom), vbom);
+		spr_mask = new Sprite(16, 72, ResourceManager.getInstance().g_h_targetmask_r, vbom);
 		
 		hud.attachChild(spr_reload);
 		hud.attachChild(spr_ammo);
 		hud.attachChild(spr_timer);
+		//hud.attachChild(spr_targ);
+		hud.attachChild(spr_mask);
 		
 		updateAmmo();
 		camera.setHUD(hud);
@@ -125,7 +131,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
 	@Override
 	public void onBackPressed() {
-		nextLevel();
+		m_ammo += 1;
+		updateAmmo();
+		//nextLevel();
 		//SceneManager.getInstance().setMenuScene();
 	}
 
@@ -135,6 +143,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		hud.detachChildren();
 		hud = null;
 		bgm.stop();
+	}
+	
+	public TiledTextureRegion genCiv(int top, int middle, int bottom)
+	{
+		TiledTextureRegion tex;
+		
+		switch(top)
+		{
+		case 0:
+			tex = ResourceManager.getInstance().g_civ_a_t;
+			break;
+		case 1:
+			tex = ResourceManager.getInstance().g_civ_b_t;
+			break;
+		case 2:
+			tex = ResourceManager.getInstance().g_civ_c_t;
+			break;
+		case 3:
+			tex = ResourceManager.getInstance().g_civ_d_t;
+			break;
+		default:
+			tex = ResourceManager.getInstance().g_civ_a_t;
+			break;
+		}
+		
+		tex.setCurrentTileIndex((int)((bottom * 4) + middle));
+		
+		return tex;
 	}
 	
 	private void loadLevel(int index)
@@ -250,12 +286,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		hud.attachChild(spr_ammo);
 	}
 	
-	
-	@Override
-	public void onUpdate() {
-		//Update level
-		levelList.get(curLevel).Update(m_curTime);
-
+	private void updateTimer()
+	{
 		long timeTaken = m_curTime - levelList.get(curLevel).m_startTime;
 		
 		float fraction = (float)timeTaken / (float)levelList.get(curLevel).m_totalTime; 
@@ -265,7 +297,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			fraction = (float)timeTaken / (float)levelList.get(curLevel).m_copTime;
 		}
 		
+		spr_mask.setPosition(spr_mask.getX(), 58 + ((m_maxMaskHeight * fraction)));
+		spr_mask.setHeight(m_maxMaskHeight - (m_maxMaskHeight * fraction));
+		
 		spr_timer.setWidth(m_maxTimerWidth - (m_maxTimerWidth * fraction));
+	}
+	
+	@Override
+	public void onUpdate() {
+		//Update level
+		levelList.get(curLevel).Update(m_curTime);
+
+		updateTimer();
 		
 		//Next level
 		if (levelList.get(curLevel).m_complete)
@@ -278,8 +321,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		if (m_showscope)
 		{
 			spr_scope.setVisible(true);
-			camera.setZoomFactor(1.5f);
-			camera.setCenter(camera.getWidth() / 2, camera.getHeight());
+			camera.setZoomFactor(zoom);
+			camera.setCenter((camera.getWidth() / 2) * zoom, camera.getHeight());
 		}
 		
 		//Unscope and unzoom
@@ -328,7 +371,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			if (m_showscope)
 			{
 				m_shotX = pSceneTouchEvent.getX();
-				m_shotY = pSceneTouchEvent.getY();
+				m_shotY = pSceneTouchEvent.getY() + aimAdjust;
 				m_showscope = false;
 			}
 		}

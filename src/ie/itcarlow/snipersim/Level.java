@@ -20,14 +20,14 @@ public class Level {
 	//Times
 	public long m_startTime;
 	public long m_totalTime;
-	long m_copTime;
+	public long m_copTime;
 	long m_spawnTime;
-	boolean alert;
+	public boolean m_alert;
 	
 	//Civilians
 	int m_maxCivs;
 	public ArrayList<Civilian> m_civArray = new ArrayList<Civilian>();
-	Civilian m_target;
+	public Civilian m_target;
 	
 	//Police
 	int m_maxCops;
@@ -96,8 +96,6 @@ public class Level {
 		m_maxCivs = 5;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
-		m_target.m_target = true;
-		m_civArray.add(m_target);
 		
 		//Police
 		m_maxCops = 1;
@@ -125,8 +123,6 @@ public class Level {
 		m_maxCivs = 15;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
-		m_target.m_target = true;
-		m_civArray.add(m_target);
 				
 		//Police
 		m_maxCops = 0;
@@ -142,7 +138,6 @@ public class Level {
 	//Level 2 variables
 	private void Level2()
 	{
-
 		//Default values, can be overridden by level methods
 		m_background = ResourceManager.getInstance().g_l_city_r;
 		m_overlay = ResourceManager.getInstance().g_lo_curtains_r;
@@ -155,8 +150,6 @@ public class Level {
 		m_maxCivs = 30;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
-		m_target.m_target = true;
-		m_civArray.add(m_target);
 				
 		//Police
 		m_maxCops = 5;
@@ -198,6 +191,8 @@ public class Level {
 			m_civArray.get(i).reset();
 			m_gScene.attachChild(m_civArray.get(i).sprite());
 		}
+		
+		m_gScene.attachChild(m_target.sprite());
 	}
 	
 	public void loadCops()
@@ -212,6 +207,8 @@ public class Level {
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
 			m_gScene.detachChild(m_civArray.get(i).sprite());
 		}
+		
+		m_gScene.detachChild(m_target.sprite());
 	}
 	
 	public void unloadCops()
@@ -262,6 +259,8 @@ public class Level {
 		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
 			 m_civArray.get(i).checkShot(x, y);
 		}
+		
+		m_target.checkShot(x,  y);
 	}
 	
 	public void Update(long time) {
@@ -275,16 +274,23 @@ public class Level {
 				m_civArray.get(i).Update(time);
 			}
 			
-			//Otherwise the target is dead
-			else if (m_civArray.get(i).m_target)
-				m_complete = true;
-			
 			else
 			{
 				m_gScene.detachChild(m_civArray.get(i).sprite());
 			}
 			
 		}
+		
+		//Update target
+		if (m_target.m_active)
+		{
+			m_target.Update(time);
+		}
+		
+		else
+		{
+			m_complete = true;
+		}
+			
 	}
-
 }
