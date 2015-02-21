@@ -60,6 +60,7 @@ public class SceneManager {
 		 //set the new scene
 		engine.setScene(scene);
 		currentScene = scene;
+		
 	 }
 	 
 	 //Scene switcher

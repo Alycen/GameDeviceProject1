@@ -18,6 +18,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import android.view.MotionEvent;
@@ -36,6 +37,16 @@ public class Police extends Civilian {
 	public Police(float x, float y, int top, int middle, int bottom) {
 		super(x, y, top, middle, bottom);
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void genSprite(int top, int middle, int bottom)
+	{
+		TiledTextureRegion tex = ResourceManager.getInstance().g_cop_t;
+				
+		tex.setCurrentTileIndex(top + middle + bottom);
+		
+		m_sprite = new Sprite(m_position.x, m_position.y, tex, ResourceManager.getInstance().vbom);
 	}
 	
 }

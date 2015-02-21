@@ -24,6 +24,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	//Levels
 	public final ArrayList<Level> levelList  = new ArrayList<Level>();
 	int curLevel = 0;
+	int maxLevel = 1;
 	
 	//Sprites & layers
 	IEntity lBG;
@@ -44,12 +45,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	//Times
 	long m_curTime, m_reloadTime;
 	
+	//Gameflow
+	boolean m_pause;
+	boolean m_complete;
+	boolean m_success;
+	
 	//Rifle
 	boolean m_showscope, m_ready = false;
 	float m_shotX, m_shotY;
 	int m_ammo;
 	long m_lastShot;
-	long m_maxReloadTime = 2000;
+	long m_maxReloadTime = 10;//2000;
 	float aimAdjust = -40;
 	float zoom = 1.5f;
 	
@@ -101,13 +107,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		
 		spr_ammo = new Sprite(710, 16, ResourceManager.getInstance().g_h_ammo_t, vbom);
 		spr_timer = new Sprite(16, 16, ResourceManager.getInstance().g_h_timer_r, vbom);
-		spr_targ = new Sprite(16, 72, genCiv(levelList.get(curLevel).m_target.m_top, levelList.get(curLevel).m_target.m_middle, levelList.get(curLevel).m_target.m_bottom), vbom);
-		spr_mask = new Sprite(16, 72, ResourceManager.getInstance().g_h_targetmask_r, vbom);
+		spr_targ = new Sprite(16, 74, genCiv(levelList.get(curLevel).m_target.m_top, levelList.get(curLevel).m_target.m_middle, levelList.get(curLevel).m_target.m_bottom), vbom);
+		spr_mask = new Sprite(16, 74, ResourceManager.getInstance().g_h_targetmask_r, vbom);
 		
 		hud.attachChild(spr_reload);
 		hud.attachChild(spr_ammo);
 		hud.attachChild(spr_timer);
-		//hud.attachChild(spr_targ);
+		hud.attachChild(spr_targ);
 		hud.attachChild(spr_mask);
 		
 		updateAmmo();
@@ -286,68 +292,106 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		hud.attachChild(spr_ammo);
 	}
 	
-	private void updateTimer()
-	{
-		long timeTaken = m_curTime - levelList.get(curLevel).m_startTime;
+	private boolean updateTimer()
+	{		
+		float fraction = 0;
 		
-		float fraction = (float)timeTaken / (float)levelList.get(curLevel).m_totalTime; 
-		
-		if (levelList.get(curLevel).m_alert)
+		if (!levelList.get(curLevel).m_alert)
 		{
+			long timeTaken = m_curTime - levelList.get(curLevel).m_startTime;
+			fraction = (float)timeTaken / (float)levelList.get(curLevel).m_totalTime; 
+		}
+		
+		else 
+		{
+			long timeTaken = m_curTime - levelList.get(curLevel).m_alertTime;
 			fraction = (float)timeTaken / (float)levelList.get(curLevel).m_copTime;
 		}
 		
+		//Update target mask
 		spr_mask.setPosition(spr_mask.getX(), 58 + ((m_maxMaskHeight * fraction)));
 		spr_mask.setHeight(m_maxMaskHeight - (m_maxMaskHeight * fraction));
 		
 		spr_timer.setWidth(m_maxTimerWidth - (m_maxTimerWidth * fraction));
+		
+		return (m_maxTimerWidth - (m_maxTimerWidth * fraction) <= 0);
 	}
 	
 	@Override
 	public void onUpdate() {
-		//Update level
-		levelList.get(curLevel).Update(m_curTime);
-
-		updateTimer();
 		
-		//Next level
-		if (levelList.get(curLevel).m_complete)
-			nextLevel();
-		
-		//Get time
-		m_curTime = System.currentTimeMillis();
-		
-		//Scope and zoom
-		if (m_showscope)
+		if (m_complete)
 		{
-			spr_scope.setVisible(true);
-			camera.setZoomFactor(zoom);
-			camera.setCenter((camera.getWidth() / 2) * zoom, camera.getHeight());
-		}
-		
-		//Unscope and unzoom
-		if (!m_showscope)
-		{
-			camera.setCenter(camera.getWidth() / 2, camera.getHeight() / 2);
-			camera.setZoomFactor(1f);
-			spr_scope.setVisible(false);
-		}
-		
-		//If valid coordinates
-		if (m_ready && m_shotX >= 0 && m_shotY >= 0)
-		{
-			//Attempt to shoot
-			shoot(m_shotX, m_shotY);
+			//Win
+			if (m_success)
+			{
+				//Next level (if there is one)
+				if (curLevel < maxLevel)
+					nextLevel();
 				
-			//Reset the shot
-			m_shotX = -1;
-			m_shotY = -1;
+				//Else go to main menu
+				else 
+				{
+					SceneManager.getInstance().setMenuScene();
+				}
+			}
+			
+			//Loss
+			else
+			{
+				System.exit(0);
+			}
 		}
 		
-		//Reload timer
-		if (!m_ready)
+		if (m_pause)
 		{
-			reload();
+			//pause
+		}
+		
+		else
+		{
+			//Get time
+			m_curTime = System.currentTimeMillis();
+			
+			//Update level
+			levelList.get(curLevel).Update(m_curTime);
+			m_success = levelList.get(curLevel).m_targDead;
+
+			//Returns true if the timer is below 0
+			m_complete = updateTimer();
+		
+			//Scope and zoom
+			if (m_showscope)
+			{
+				spr_scope.setVisible(true);
+				camera.setZoomFactor(zoom);
+				camera.setCenter((camera.getWidth() / 2) * zoom, camera.getHeight());
+			}
+			
+			//Unscope and unzoom
+			if (!m_showscope)
+			{
+				camera.setCenter(camera.getWidth() / 2, camera.getHeight() / 2);
+				camera.setZoomFactor(1f);
+				spr_scope.setVisible(false);
+			}
+		
+			//If valid coordinates
+			if (m_ready && m_shotX >= 0 && m_shotY >= 0)
+			{
+				//Attempt to shoot
+				shoot(m_shotX, m_shotY);
+				
+				//Reset the shot
+				m_shotX = -1;
+				m_shotY = -1;
+			}
+		
+			//Reload timer
+			if (!m_ready)
+			{
+				reload();
+			}
 		}
 	}
 

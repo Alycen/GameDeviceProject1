@@ -20,6 +20,7 @@ public class Level {
 	//Times
 	public long m_startTime;
 	public long m_totalTime;
+	public long m_alertTime;
 	public long m_copTime;
 	long m_spawnTime;
 	public boolean m_alert;
@@ -48,7 +49,7 @@ public class Level {
 	Random rand = new Random(System.currentTimeMillis());
 	
 	//Complete
-	public boolean m_complete = false;
+	public boolean m_targDead;
 	
 	//==========//Methods
 	
@@ -79,6 +80,13 @@ public class Level {
 		//Populate civilians & cops
 		createCivs();
 		createCops();
+		m_targDead = false;
+	}
+	
+	public void reset()
+	{
+		m_targDead = false;
+		
 	}
 	
 	//Default level variables
@@ -116,7 +124,7 @@ public class Level {
 		m_overlay = ResourceManager.getInstance().g_lo_blnk_r;
 		
 		//Times
-		m_totalTime = 20000;
+		m_totalTime = 30000;
 		m_copTime = 7500;
 				
 		//Civilians
@@ -125,7 +133,7 @@ public class Level {
 		m_target = randomCiv();
 				
 		//Police
-		m_maxCops = 0;
+		m_maxCops = 10;
 				
 		//Bounds
 		m_top = 400;
@@ -143,11 +151,11 @@ public class Level {
 		m_overlay = ResourceManager.getInstance().g_lo_curtains_r;
 		
 		//Times
-		m_totalTime = 15000;
+		m_totalTime = 20000;
 		m_copTime = 5000;
 				
 		//Civilians
-		m_maxCivs = 30;
+		m_maxCivs = 20;
 		m_spawnTime = 1000;
 		m_target = randomCiv();
 				
@@ -165,24 +173,25 @@ public class Level {
 	//====// Civilians
 	public void createCivs()
 	{		
-		//Civilian civ = randomCiv();
-		
 		//Half the civilians start on the level
 		for (int i = 0, max = (m_maxCivs / 2) - 1 ; i < max ; i++) {
 
+			Civilian civ = randomCiv();
 			//If we're the same as target, re-roll
-			//while (m_target.compare(civ))
-			//{
-			//	civ = randomCiv();
-			//}
+			while (m_target.compare(civ))
+			{
+				civ = randomCiv();
+			}
 			
-			m_civArray.add(randomCiv());
+			m_civArray.add(civ);
 		}
 	}
 	
 	public void createCops()
-	{
-		
+	{		
+		for (int i = 0, max = m_maxCops; i < max ; i++) {
+			m_copArray.add(randomCop());
+		}
 	}
 	
 	public void loadCivs()
@@ -249,9 +258,40 @@ public class Level {
 		}
 		
 		Civilian civ = new Civilian(distX, 420 - distY, top, middle, bottom);
-		civ.setVel(spd, 0);
+		civ.setVel(spd > 0 ? spd : 1, 0);
 		
 		return civ;
+	}
+	
+	public Police randomCop()
+	{
+		boolean left = rand.nextBoolean();
+		float distX = rand.nextInt(65);
+		float distY = rand.nextInt(40);
+		float spd = rand.nextInt(3);
+		
+		int top = rand.nextInt(3);
+		int middle = rand.nextInt(3);
+		int bottom = rand.nextInt(3);
+		
+		if (left)
+		{
+			//Off the left edge is -
+			distX *= -1;
+		}
+		
+		else
+		{
+			//Moving left is -
+			spd *= -1;
+			//Off the far edge
+			distX += 800;
+		}
+		
+		Police cop = new Police(distX, 420 - distY, top, middle, bottom);
+		cop.setVel(spd > 0 ? spd : 1, 0);
+		
+		return cop;
 	}
 	
 	public void checkShot(float x, float y)
@@ -261,6 +301,31 @@ public class Level {
 		}
 		
 		m_target.checkShot(x,  y);
+		
+		if (!m_alert)
+		{
+			alert();
+		}
+		
+		//Only check cops if alerted and therefore spawned
+		else
+		{
+			for (int i = 0, max = m_copArray.size(); i < max; i ++) {
+				 m_copArray.get(i).checkShot(x, y);
+			}
+		}
+	}
+	
+	public void alert()
+	{
+		m_alert = true;
+		m_alertTime = System.currentTimeMillis();
+		
+		for (int i = 0, max = m_civArray.size(); i < max; i ++) {
+			 m_civArray.get(i).panic();
+		}
+		
+		loadCops();
 	}
 	
 	public void Update(long time) {
@@ -277,8 +342,25 @@ public class Level {
 			else
 			{
 				m_gScene.detachChild(m_civArray.get(i).sprite());
+			}	
+		}
+		
+		//Update cops if alerted
+		if (m_alert)
+		{
+			for (int i = 0, max = m_copArray.size(); i < max; i ++) {
+				
+				//Only update if we're active
+				if (m_copArray.get(i).m_active)
+				{
+					m_copArray.get(i).Update(time);
+				}
+				
+				else
+				{
+					m_gScene.detachChild(m_copArray.get(i).sprite());
+				}	
 			}
-			
 		}
 		
 		//Update target
@@ -286,11 +368,8 @@ public class Level {
 		{
 			m_target.Update(time);
 		}
-		
-		else
-		{
-			m_complete = true;
-		}
+
+		m_targDead = !m_target.m_alive;
 			
 	}
 }
