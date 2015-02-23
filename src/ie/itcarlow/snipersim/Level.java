@@ -76,17 +76,15 @@ public class Level {
 			LevelDef();
 			break;
 		}
-		
-		//Populate civilians & cops
-		createCivs();
-		createCops();
-		m_targDead = false;
 	}
 	
 	public void reset()
 	{
+		//Populate civilians & cops
+		createCivs();
+		createCops();
+		m_alert = false;
 		m_targDead = false;
-		
 	}
 	
 	//Default level variables
@@ -98,7 +96,7 @@ public class Level {
 		
 		//Times
 		m_totalTime = 30000;
-		m_copTime = 10000;
+		m_copTime = 15000;
 				
 		//Civilians
 		m_maxCivs = 5;
@@ -133,7 +131,7 @@ public class Level {
 		m_target = randomCiv();
 				
 		//Police
-		m_maxCops = 10;
+		m_maxCops = 5;
 				
 		//Bounds
 		m_top = 400;
@@ -160,7 +158,7 @@ public class Level {
 		m_target = randomCiv();
 				
 		//Police
-		m_maxCops = 5;
+		m_maxCops = 100;
 				
 		//Bounds
 		m_top = 400;
@@ -207,6 +205,7 @@ public class Level {
 	public void loadCops()
 	{
 		for (int i = 0, max = m_copArray.size(); i < max; i ++) {
+			m_copArray.get(i).reset();
 			m_gScene.attachChild(m_copArray.get(i).sprite());
 		}
 	}

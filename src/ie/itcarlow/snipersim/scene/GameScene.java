@@ -55,7 +55,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	float m_shotX, m_shotY;
 	int m_ammo;
 	long m_lastShot;
-	long m_maxReloadTime = 10;//2000;
+	long m_maxReloadTime = 1750;
 	float aimAdjust = -40;
 	float zoom = 1.5f;
 	
@@ -183,6 +183,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 	{
 		//Unload current level entities
 		levelList.get(curLevel).unloadCivs();
+		levelList.get(curLevel).unloadCops();
 		
 		//set the current level to the new level
 		curLevel = index;
@@ -190,6 +191,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 		//Load background, set entities for new level
 		setLevelBG(levelList.get(curLevel).m_background);
 		setLevelOL(levelList.get(curLevel).m_overlay);
+		
+		levelList.get(curLevel).reset();
 		
 		levelList.get(curLevel).loadCivs();
 		
@@ -339,7 +342,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 			//Loss
 			else
 			{
-				System.exit(0);
 			}
 		}
 		

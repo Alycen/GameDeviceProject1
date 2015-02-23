@@ -25,7 +25,7 @@ public class Civilian {
 	//Times
 	private long m_spawnTime;
 	private long m_tod;
-	private long m_moveTimer = 5000;
+	private long m_moveTimer;
 	private long m_lastMove;
 	private long m_despawnTime = 5000;
 	
@@ -47,6 +47,8 @@ public class Civilian {
 		m_spawnTime = System.currentTimeMillis();
 		m_active = true;
 		m_alive = true;
+		m_panic = false;
+		m_moveTimer = rand.nextInt(4000);
 	}
 	
 	public void genSprite(int top, int middle, int bottom)
@@ -117,13 +119,43 @@ public class Civilian {
 		float y = m_sprite.getY();	
 		
 		//Random rolls
-		//if (!m_panic)
-		//{
-		//	if (time - m_lastMove > m_moveTimer)
-		//	{
-		//		
-		//	}
-		//}
+		if (!m_panic)
+		{
+			if (time - m_lastMove > m_moveTimer / 2)
+			{
+				//40% chance
+				if (rand.nextInt(10) > 6)
+				{
+					int i = 1;
+					if (rand.nextBoolean())
+						i = -1;
+					
+					m_velocity.x = (rand.nextInt(2) + 1) * i;
+					m_lastMove = time;
+					m_moveTimer = rand.nextInt(3000) + 2000;
+				}
+			}
+			
+		}
+		
+		//Panicked running
+		else
+		{
+			if (time - m_lastMove > m_moveTimer)
+			{
+				//60% chance
+				if (rand.nextInt(10) > 4)
+				{
+					int i = 1;
+					if (rand.nextBoolean())
+						i = -1;
+					
+					m_velocity.x = (rand.nextInt(4) + 2) * i;
+					m_lastMove = time;
+					m_moveTimer = rand.nextInt(4000);
+				}
+			}
+		}
 		
 		//Off left edge
 		if (x + 24 < 0)
